@@ -1,5 +1,3 @@
-
-
 public class more_variables {
     public static void main(String[] args){
         // integer types
