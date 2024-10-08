@@ -16,7 +16,9 @@ public class more_variables {
 
         // characters
         char copyrightSymbol = '\u00A9';
+        char percentSymbol = '%';
 
-        System.out.println("This is the copy right symbol." + copyrightSymbol);
+        System.out.println("This is the copy right symbol = " + copyrightSymbol);
+        System.out.println("This is the percent symbol = " + percentSymbol);
     }
 }
