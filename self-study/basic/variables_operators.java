@@ -117,5 +117,65 @@ public class variables_operators {
         
         System.out.println(literalString1 == literalString2);   // Check letter/string
         System.out.println(objectString1 == objectString2);     // Check variable name
+
+
+        System.out.println("\nPart 10");
+        System.out.println("Hello World! I am Wongsatorn Suwannarit. I am from USA and I am 69 years old.");
+        String name = "Wongsatorn Suwannarit";  // %s
+        String country = "USA";     // %s
+        age = 69;   // %d
+        System.out.println("Hello World! I am " + name + ". I am from " + country + " and I am " + age + " years old.");
+        String company = "Toilet Co,";
+        System.out.println("I work at " + company + ".");
+        System.out.println("--------------------");
+
+        String formattedString = String.format("My name is %s. I am from %s. I am %d years old. I work at %s.", name,country,age,company);
+        System.out.println(formattedString);
+
+        double GPA = 3.78;      // %f
+        formattedString = String.format(formattedString + " My GPA is %.2f.", GPA);
+        System.out.println(formattedString);
+
+        char percentSign = '%';     // %b
+        boolean truth = false;
+        formattedString = String.format(formattedString + "My attendent %c is 100.\nAm I telling the truth? %b", percentSign,truth);
+        System.out.println(formattedString);
+
+
+        System.out.println("\nPart 11");
+        name = "Wongsatorn Suwannarit";
+        System.out.println(name);
+        System.out.println("Length is " + name.length());
+        System.out.println("Is empty? " + name.isEmpty());
+        name = "";
+        System.out.println("Name removed");
+        System.out.println("Is empty? " + name.isEmpty());
+        System.out.println("-------------");
+        name = "Wongsatorn Suwannarit";
+        System.out.println(name.toUpperCase());
+        System.out.println(name);
+        System.out.println(name.toLowerCase());
+
+
+        System.out.println("\nPart 12");
+        String str1 = new String("abc");
+        String str2 = new String("abc");
+        String str3 = new String("ABC");
+
+        System.out.println(str1 == str2);       // Check declared name
+        System.out.println(str1.equals(str2));  // Check letter
+        System.out.println(str1.equals(str3));
+        System.out.println(str1.equalsIgnoreCase(str3));
+
+
+        System.out.println("\nPart 13");
+        String string = "The sky is blue.";
+        System.out.println(string);
+        System.out.println(string.replace("blue","red"));
+
+        string = "That tall guy";
+        System.out.println(string);
+        String updatedString = string.replace("tall","short");
+        System.out.println(updatedString);
     }
 }
