@@ -7,7 +7,7 @@ class Customer {
     private int ID;
     private int order; // order amount (random value 1-20)
 
-    public Customer() {
+    public Customer() { // constructor
         Random rand = new Random();
         order = rand.nextInt(1,21);
         ID = runningID;
@@ -24,9 +24,6 @@ class Shop {
     public void simulation() { /* implement simulation */ }
 }
 
-public class main(String[] args){
-
+public class main(String[] args) {
+    // Get refill items & max days for simulation from user
 }
-
-Random rand = new Random();
-order = rand.nextInt(1,21);
