@@ -116,7 +116,7 @@ public class main {
         String userInput;
 
         try {
-            Scanner fileScanner = new Scanner(new File("/workspaces/Java/data_structures/Ex3_6581167/languages.txt"));
+            Scanner fileScanner = new Scanner(new File("/workspaces/Java/data_structures/assignments/Ex3_6581167/languages.txt"));
             //Scanner fileScanner = new Scanner(new File("src/main/java/Ex3_6581167/languages.txt"));
             fileScanner.nextLine();
             while (fileScanner.hasNextLine()){
