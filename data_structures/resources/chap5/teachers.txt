@@ -1,0 +1,7 @@
+Stella, 30, 3, 3
+Michel, 40, 8, 4
+Nicole, 30, 3, 3
+Oliver, 35, 3, 4
+Philip, 40, 5, 6
+Quincy, 45, 5, 8
+Robert, 40, 8, 7
