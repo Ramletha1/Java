@@ -177,5 +177,6 @@ public class variables_operators {
         System.out.println(string);
         String updatedString = string.replace("tall","short");
         System.out.println(updatedString);
+        System.out.println(string.contains("You")); // Check letter in that string
     }
 }

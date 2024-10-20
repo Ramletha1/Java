@@ -1,4 +1,0 @@
-Compile = javac hello_world.java
-
-Run = java hello_world
-(without .class)
