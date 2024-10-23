@@ -9,7 +9,7 @@ public class hashmap {
 
         empIds.put("John", 12345);
         empIds.put("Carl", 54321);
-        empIds.put("Jerry", 8675309);
+        empIds.put("Jerry", 86753);
 
         System.out.println(empIds);
 
@@ -18,7 +18,7 @@ public class hashmap {
         System.out.println(empIds.containsKey("Jerry"));
         System.out.println(empIds.containsKey("George"));
 
-        System.out.println(empIds.containsValue(8675309));
+        System.out.println(empIds.containsValue(86753));
         System.out.println(empIds.containsValue(6));
 
         empIds.put("John", 98765);      // create new data, but will replace if already exists
@@ -31,6 +31,22 @@ public class hashmap {
         System.out.println(empIds);
 
         empIds.remove("Steve");
+        System.out.println(empIds);
+
+        System.out.println("\nPrint all employees details...");
+        empIds.forEach((name, id) -> {
+            System.out.println(name + ": " + id);
+        });
+
+        empIds.forEach((name, id) -> {  // For loop
+            System.out.print(name + ": " + id + " ---> ");
+            id = Integer.parseInt(String.format("%d00", id));
+            empIds.replace(name, id);
+            System.out.println(id + "\n");
+        });
+        System.out.println(empIds);
+
+        empIds.clear();
         System.out.println(empIds);
     }
 }
