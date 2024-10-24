@@ -188,6 +188,6 @@ public class main {
     }
 }
 
-// directory -> /java/Ex3_6581167 : java -cp .. Ex3_6581167.main
+// directory -> /java/Ex3_6581167 : java -cp .. Ex3_6581167/main
 
-// directory -> /java : java Ex3_6581167.main
+// directory -> /java : java Ex3_6581167/main
