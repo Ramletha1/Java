@@ -1,6 +1,4 @@
-package Ex4_6581167;
-
-// Creator: Sarum Suknijarun 6581063
+package Ex4_6581167; // Wongsatorn Suwannarit
 
 import java.util.*;
 
@@ -29,8 +27,8 @@ class Customer {
 }
 
 class Shop {
-    private int itemsToRefill;
-    private int maxDays;
+    private int itemsToRefill;  // items to refill in odd day
+    private int maxDays;        // max day for simulation
     private PriorityQueue<Customer> orderQueue = new PriorityQueue<>(new SortByCustomerOrder().reversed().thenComparing(new SortByCustomerID()));
     private ArrayDeque<Customer> billingQueue = new ArrayDeque<>();
     public Shop(int item,int day) {
@@ -160,8 +158,8 @@ public class Main {
         item = scanner.nextInt();
         System.out.println("Enter max days");
         day = scanner.nextInt();
-        Shop S = new Shop(item,day);
-        S.simulation();
+        Shop shop = new Shop(item,day);
+        shop.simulation();
         scanner.close();
     }
 }
