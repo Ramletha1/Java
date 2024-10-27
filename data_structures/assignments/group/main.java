@@ -58,7 +58,7 @@ class Board {
 
     public void solve() {
         findSolution(0);                                        // Display total solution
-        if (totalSolution>0) System.out.printf("There are %d possible solutions.\n", totalSolution);
+        if (totalSolution>0) System.out.printf("There are %d possible solutions.\n\n", totalSolution);
         else System.out.println("No solution.");
     }
 
