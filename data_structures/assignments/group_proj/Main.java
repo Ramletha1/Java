@@ -112,7 +112,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("-----------  N-Queen NxN-Board  -----------");
-        while (true) {
+        while (true) {      // Loop askInput until user want to exit program
             if (!askInput(scanner)) {
                 System.out.println("Exiting the program..");
                 break;
@@ -126,7 +126,7 @@ public class Main {
         String input;
         int N;
 
-        while (true) {                  // Ask for N size
+        while (true) {            // Ask for N size
             System.out.println("Enter N for N*N board (N must be at least 4)");
             try {
                 N = Integer.parseInt(scanner.nextLine());
@@ -135,41 +135,41 @@ public class Main {
             System.out.println("\nError. Please input 4 or more only.");
         }
 
-        Board board = new Board(N);
+        Board board = new Board(N);     // Create board
         board.displayBoard();           // Print empty board
 
 
-        while (true) {                  // ASk for Manual Input
+        while (true) {           // ASk for Manual Input
             System.out.println("Manually place the First Queen? (y for yes, n for no)");
             input = scanner.nextLine().toLowerCase();
             if (input.equals("y") || input.equals("n")) break;
             System.out.println("\nError. Please enter valid input.");
         }
 
-        if (input.equals("n")) {           // No (Let program do the work)
+        if (input.equals("n")) { // No (Let program do the work)
             board.solve();
-        } else {                                    // Yes (Input manually)
+        } else {                 // Yes (Input manually)
             int row, col;
-            while (true) {
+            while (true) {       // Ask row
                 System.out.print("Enter row: ");
                 try {
                     row = Integer.parseInt(scanner.nextLine())-1;
-                    if (row<N || row>=0) break;
+                    if (row<N && row>=0) break;
                 } catch (Exception e) { }
                 System.out.printf("\nError. Please enter no more than %d.\n", N);
             }
-            while (true) {
+            while (true) {      // Ask column
                 System.out.print("Enter column: ");
                 try {
                     col = Integer.parseInt(scanner.nextLine())-1;
-                    if (col<N || row>=0) break;
+                    if (col<N && col>=0) break;
                 } catch (Exception e) { }
                 System.out.printf("\nError. Please enter no more than %d.\n", N);
             }
             board.manualInput(row, col);
         }
 
-        while (true) {
+        while (true) {          // Ask continue or exit
             System.out.println("1: Continue  2: Exit");
             try {
                 input = scanner.nextLine();
