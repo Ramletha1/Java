@@ -131,7 +131,7 @@ public class Main {
             try {
                 N = Integer.parseInt(scanner.nextLine());
                 if (N>=4) break;
-            } catch (Exception e) { }
+            } catch (NumberFormatException e) { }
             System.out.println("\nError. Please input 4 or more only.");
         }
 
@@ -155,7 +155,7 @@ public class Main {
                 try {
                     row = Integer.parseInt(scanner.nextLine())-1;
                     if (row<N && row>=0) break;
-                } catch (Exception e) { }
+                } catch (NumberFormatException e) { }
                 System.out.printf("\nError. Please enter no more than %d.\n", N);
             }
             while (true) {      // Ask column
@@ -163,7 +163,7 @@ public class Main {
                 try {
                     col = Integer.parseInt(scanner.nextLine())-1;
                     if (col<N && col>=0) break;
-                } catch (Exception e) { }
+                } catch (NumberFormatException e) { }
                 System.out.printf("\nError. Please enter no more than %d.\n", N);
             }
             board.manualInput(row, col);
@@ -175,7 +175,7 @@ public class Main {
                 input = scanner.nextLine();
                 if (input.equals("1")) return true;
                 else if (input.equals("2")) return false;
-            } catch (Exception e) { }
+            } catch (NumberFormatException e) { }
             System.out.println("\nError. Please enter valid input");
         }
     }
