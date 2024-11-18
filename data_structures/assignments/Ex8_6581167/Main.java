@@ -9,13 +9,13 @@ class ActorMap {
     // Java's String already has consistent equals & compareTo for equality check 
     private TreeMap<String, LinkedHashSet<String>> workingMap;  // Movie(value) , Actors(key)
     private LinkedHashSet<String> resultSet;
-    private HashSet<String> totalActors;
 
     public ActorMap() {     // Constructor
         workingMap = new TreeMap<>();
         resultSet = new LinkedHashSet<>();
-        totalActors = new HashSet<>();
     }
+
+// -------------------------------------------------------------------------------------------
 
     public void addMovieActor(String movie, HashSet<String> actors) {
         for (String actor : actors) {
@@ -26,26 +26,22 @@ class ActorMap {
         }
     }
 
-    public void checkActor(HashSet<String> chosenActor) {   // Find same name/surname with different surname/name
-        totalActors.clear();
-        resultSet.clear();
+// -------------------------------------------------------------------------------------------
 
-        for (String input : chosenActor) {      // Check actor name
+    public void initialActors(HashSet<String> chosenActor) {
+        resultSet.clear();     
+        for (String input : chosenActor) {      // Find different people with same name
             for (String actor : workingMap.keySet()) {
                 if (actor.toLowerCase().contains(input.toLowerCase())) {
-                    totalActors.add(actor);
+                    resultSet.add(actor);
                 }
             }
         }
-    }
-
-    public void initialActors(HashSet<String> chosenActor) {
-        checkActor(chosenActor);    // <--- this function already done it all
 
         HashSet<String> totalMovies = new HashSet<>();
-        System.out.println("Valid input actors = " + totalActors + "\n");
+        System.out.println("Valid input actors = " + resultSet + "\n");
 
-        for (String actor : totalActors) { 
+        for (String actor : resultSet) { 
             LinkedHashSet<String> movies = workingMap.get(actor);
             totalMovies.addAll(movies);     // movies count
 
@@ -55,17 +51,27 @@ class ActorMap {
             }
             System.out.println();
         }
-        System.out.println("\nResult = " + totalActors);
+        System.out.println("\nResult = " + resultSet);
         System.out.printf("\nTotal movies = %d\n", totalMovies.size());
     }
 
-    public void containActors(HashSet<String> chosenActor) {
-        checkActor(chosenActor);    // Function
+// -------------------------------------------------------------------------------------------
 
-        System.out.println("Valid input actors = " + totalActors + "\n");
-    
+    public void containActors(HashSet<String> chosenActor) {
+
+        HashSet<String> tmpActors = new HashSet<>(); // Compare user input with input from initial actors
+        for (String input : chosenActor) {
+            for (String actor : resultSet) {
+                if (actor.toLowerCase().contains(input.toLowerCase())) {
+                tmpActors.add(actor);
+                }
+            }
+        }
+
         boolean isFirstActor = true;
-        for (String actor : totalActors) {  // actor from result
+        HashSet<String> tmpMovies = new HashSet<>();
+        System.out.println("Valid input actors = " + tmpActors + "\n");
+        for (String actor : tmpActors) {  // actor from result
             LinkedHashSet<String> movies = workingMap.get(actor);
 
             System.out.printf("%20s", actor);   // print showcase
@@ -74,23 +80,34 @@ class ActorMap {
             }
             System.out.println();
 
-            if (isFirstActor) {     // Assign resultSet a data of actor's movie itself on first time
-                resultSet.addAll(movies);
+            if (isFirstActor) {     // Assign tmpMovie a data actor's movie itself on first time
+                tmpMovies.addAll(movies);
                 isFirstActor = false;
-            } else resultSet.retainAll(movies);     // Keep all repeated movies
+            } else tmpMovies.retainAll(movies); // Keep all repeated movies
         }
 
-        System.out.println("\nResult = " + resultSet);
-        System.out.printf("\nTotal movies = %d\n", resultSet.size());
+        System.out.println("\nResult = " + tmpMovies);
+        System.out.printf("\nTotal movies = %d\n", tmpMovies.size());
     }
+
+// -------------------------------------------------------------------------------------------
      
     public void withoutActors(HashSet<String> chosenActor) {
-        checkActor(chosenActor);    // Function
 
-        System.out.println("Valid input actors = " + totalActors + "\n");
-        for (LinkedHashSet<String> movies : workingMap.values()) resultSet.addAll(movies);  // Assign resultSet every existing movies
+        HashSet<String> tmpActors = new HashSet<>(); // Compare user input with input from initial actors
+        for (String input : chosenActor) {
+            for (String actor : resultSet) {
+                if (actor.toLowerCase().contains(input.toLowerCase())) {
+                tmpActors.add(actor);
+                }
+            }
+        }
+        System.out.println("Valid input actors = " + tmpActors + "\n");
 
-        for (String actor : totalActors) {  // actor from result
+        HashSet<String> tmpMovies = new HashSet<>();
+        for (LinkedHashSet<String> movies : workingMap.values()) tmpMovies.addAll(movies);  // Assign resultSet every existing movies
+        // THIS PART <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        for (String actor : tmpActors) {  // actor from result
             LinkedHashSet<String> movies = workingMap.get(actor);
 
             System.out.printf("%20s", actor);      // Print showcase
@@ -99,12 +116,14 @@ class ActorMap {
             }
             System.out.println();
 
-            resultSet.removeAll(movies);    // remove movies with input actor's movie
+            tmpMovies.removeAll(movies);    // remove movies with input actor's movie
         }
 
-        System.out.println("\nResult = " + resultSet);      // print all movie result
-        System.out.printf("\nTotal movies = %d\n", resultSet.size());   // print total movie result
+        System.out.println("\nResult = " + tmpMovies);      // print all movie result
+        System.out.printf("\nTotal movies = %d\n", tmpMovies.size());   // print total movie result
     }
+
+// -------------------------------------------------------------------------------------------
 
     public void printWorkingMap() {     // Initial map
         HashSet<String> totalMovies = new HashSet<>();  // Store movie excluding duplicate, purpose for printing movie count
@@ -121,8 +140,9 @@ class ActorMap {
         }
         System.out.printf("\n\nTotal Movies = %d\nTotal Actors = %d\n", totalMovies.size(), workingMap.size());
     }
-} 
+}
 
+// ===========================================================================================
 
 public class Main {
     public static void main(String args[]) {
