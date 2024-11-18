@@ -51,7 +51,7 @@ class ActorMap {
             }
             System.out.println();
         }
-        System.out.println("\nResult = " + resultSet);
+        System.out.println("\nResult = " + totalMovies);
         System.out.printf("\nTotal movies = %d\n", totalMovies.size());
     }
 
@@ -95,8 +95,10 @@ class ActorMap {
     public void withoutActors(HashSet<String> chosenActor) {
 
         HashSet<String> tmpActors = new HashSet<>(); // Compare user input with input from initial actors
+        HashSet<String> tmpMovies = new HashSet<>();
         for (String input : chosenActor) {
             for (String actor : resultSet) {
+                tmpMovies.addAll(workingMap.get(actor));
                 if (actor.toLowerCase().contains(input.toLowerCase())) {
                 tmpActors.add(actor);
                 }
@@ -104,8 +106,7 @@ class ActorMap {
         }
         System.out.println("Valid input actors = " + tmpActors + "\n");
 
-        HashSet<String> tmpMovies = new HashSet<>();
-        for (LinkedHashSet<String> movies : workingMap.values()) tmpMovies.addAll(movies);  // Assign resultSet every existing movies
+        // for (String actor : tmpActors) tmpMovies.addAll(resultSet.get(actor));  // Assign resultSet every existing movies
         // THIS PART <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         for (String actor : tmpActors) {  // actor from result
             LinkedHashSet<String> movies = workingMap.get(actor);
