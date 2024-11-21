@@ -38,7 +38,7 @@ public class Main {
 
         try {
             Scanner fileScanner = new Scanner(new File("/workspaces/Java/data_structures/assignments/Ex9_6581167/movies.txt"));
-            // Scanner fileScanner = new Scanner(new File("/src/main/java/Ex8_6581167/movies.txt"));
+            // Scanner fileScanner = new Scanner(new File("/src/main/java/Ex9_6581167/movies.txt"));
             while (fileScanner.hasNextLine()) {         // Check every existing line
                 String line = fileScanner.nextLine();
                 String[] data = line.split(";");
@@ -65,14 +65,13 @@ public class Main {
 
 
     public static boolean askInput(ActorGraph actorGraph, Scanner scanner) {
-        System.out.println("Eter name or surname, or 0 to quit.");
+        System.out.println("Enter name or surname, or 0 to quit.");
         String actorInput[] = scanner.nextLine().split(",");
-        if (actorInput.length == 1) {
-            System.out.println("Length is 1.");
-            try {
-                actorInput = Integer.parseInt(actorInput);
-            } catch (NumberFormatException e) {}
-        }
+
+        if (actorInput[0].trim().equals("0")) return false;
+
+        // ...
+
         return true;
     }
 }

@@ -153,13 +153,13 @@ public class Main {
             Scanner fileScanner = new Scanner(new File("/workspaces/Java/data_structures/assignments/Ex8_6581167/movies.txt"));
             // Scanner fileScanner = new Scanner(new File("/src/main/java/Ex8_6581167/movies.txt"));
             while (fileScanner.hasNextLine()) {         // Check every existing line
-                String line = fileScanner.nextLine();
+                String line = fileScanner.nextLine().trim();
                 String[] data = line.split(";");
                 
-                String movie = data[0].trim();
+                String movie = data[0];
                 HashSet<String> actors = new HashSet<>();
                 for (int i=1; i < data.length; i++) {   // Check every ';' of that line
-                    actors.add(data[i].trim());
+                    actors.add(data[i]);
                 }
                 actorMap.addMovieActor(movie, actors);
             }
