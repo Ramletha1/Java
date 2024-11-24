@@ -8,74 +8,57 @@ import org.jgrapht.graph.*;
 import org.jgrapht.alg.color.*;
 
 
-class ActorGraph {
-
-    private TreeMap<String, LinkedHashSet<String>> workingMap;  // Store the data from file
-    private GreedyColoring<String, DefaultEdge> costarGraph;
-    private Graph<String, DefaultEdge> conflictGraph;
-
-    public ActorGraph() { // Constructor
-        workingMap = new TreeMap<>();
-        costarGraph = new SimpleGraph<>(DefaultEdge.class);
-        conflictGraph = new SimpleGraph<>(DefaultEdge.class);
-    }
-
-    public void addMovieActor(String movie, HashSet<String> actors) {
-        for (String actor : actors) {
-            if (!workingMap.containsKey(actor)) {
-                workingMap.put(actor, new LinkedHashSet<>());
-            }
-            workingMap.get(actor).add(movie);
-        }
-    }
-
-    public static final String BACON = "Kevin Bacon";
-    public void baconDegree() { /* Find Bacon degree of given actor */ }
-    public void baconParties() { /* Arrange parties for Bacon */ }
-    // You may use Map to keep data from input file as in Exercise 8
-}
- 
 
 public class Main {
     public static void main(String args[]) {
         ActorGraph actorGraph = new ActorGraph();
+        String filePath = "/workspaces/Java/data_structures/assignments/Ex9_6581167/movies.txt";
+        // String filePath = "/src/main/java/Ex9_6581167/movies.txt";
+
+        actorGraph.buildGraph(filePath);
+    }
+}
+
+
+
+class ActorGraph {
+    private Graph<String, DefaultEdge> costarGraph;
+    private Graph<String, DefaultEdge> conflictGraph;
+    public static final String BACON = "Kevin Bacon";
+
+    public ActorGraph() { // Constructor
+        this.costarGraph = new SimpleGraph<>(DefaultEdge.class);
+        this.conflictGraph = new SimpleGraph<>(DefaultEdge.class);
+    }
+
+    public void buildGraph(String fileName) {
+        costarGraph.addVertex(BACON);
 
         try {
-            Scanner fileScanner = new Scanner(new File("/workspaces/Java/data_structures/Ex9_6581167/src/main/java/Java"));
-            // Scanner fileScanner = new Scanner(new File("/src/main/java/Ex9_6581167/movies.txt"));
+            Scanner fileScanner = new Scanner(new File(fileName));
+
             while (fileScanner.hasNextLine()) {         // Check every existing line
                 String line = fileScanner.nextLine();
-                String[] data = line.split(";");
-                
+                String[] data = line.split(";");        // Split ';' into array
                 String movie = data[0].trim();
-                HashSet<String> actors = new HashSet<>();
-                for (int i=1; i < data.length; i++) {   // Check every ';' of that line
-                    actors.add(data[i].trim());
+
+                for (int i=1; i<data.length; i++) {
+                    costarGraph.addVertex(data[i]);  // Check before/after every ';' of that line
+                    for (int j=1; j<i; j++) {
+                        costarGraph.addEdge(data[i], data[j]);
+                    }
                 }
-                actorGraph.addMovieActor(movie, actors);
             }
             fileScanner.close();
-        } catch (FileNotFoundException e) { e.printStackTrace(); }
-
-        Scanner scanner = new Scanner(System.in);
-        while (true) {      // Loop ask for input
-            if (!askInput(actorGraph, scanner)) {
-                System.out.println("Exiting Program...");
-                break;
-            }
+            System.out.println("" + costarGraph.vertexSet());
+            System.out.println("\n\n\n" + costarGraph.edgeSet());
         }
-        return;
+        catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
     }
 
-
-    public static boolean askInput(ActorGraph actorGraph, Scanner scanner) {
-        System.out.println("Enter name or surname, or 0 to quit.");
-        String actorInput[] = scanner.nextLine().split(",");
-
-        if (actorInput[0].trim().equals("0")) return false;
-
-        // ...
-
-        return true;
-    }
+    public void baconDegree() { /* Find Bacon degree of given actor */ }
+    public void baconParties() { /* Arrange parties for Bacon */ }
+    // You may use Map to keep data from input file as in Exercise 8
 }
