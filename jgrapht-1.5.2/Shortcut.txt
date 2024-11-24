@@ -1,0 +1,9 @@
+Copy jgrapht-core-1.5.2.jar (lib/jgrapht-core-1.5.2.jar) into working directory
+
+To compile: (At working directory)
+: javac -cp "lib/*" Main.java
+(javac -cp lib/jgrapht-core-1.5.2.jar Main.java)
+
+To run:
+: java -cp "lib/*:." Main
+(java -cp jgrapht-core-1.5.2.jar:. Main)

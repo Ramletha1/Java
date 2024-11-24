@@ -3,17 +3,21 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+import org.jgrapht.*;
+import org.jgrapht.graph.*;
+import org.jgrapht.alg.color.*;
+
 
 class ActorGraph {
 
     private TreeMap<String, LinkedHashSet<String>> workingMap;  // Store the data from file
-    //private Graph<String, DefaultEdge> costarGraph;
-    //private Graph<String, DefaultEdge> conflictGraph;
+    private GreedyColoring<String, DefaultEdge> costarGraph;
+    private Graph<String, DefaultEdge> conflictGraph;
 
     public ActorGraph() { // Constructor
         workingMap = new TreeMap<>();
-        //costarGraph = new Graph<>();
-        //conflictGraph = new Graph<>();
+        costarGraph = new SimpleGraph<>(DefaultEdge.class);
+        conflictGraph = new SimpleGraph<>(DefaultEdge.class);
     }
 
     public void addMovieActor(String movie, HashSet<String> actors) {
@@ -37,7 +41,7 @@ public class Main {
         ActorGraph actorGraph = new ActorGraph();
 
         try {
-            Scanner fileScanner = new Scanner(new File("/workspaces/Java/data_structures/assignments/Ex9_6581167/movies.txt"));
+            Scanner fileScanner = new Scanner(new File("/workspaces/Java/data_structures/Ex9_6581167/src/main/java/Java"));
             // Scanner fileScanner = new Scanner(new File("/src/main/java/Ex9_6581167/movies.txt"));
             while (fileScanner.hasNextLine()) {         // Check every existing line
                 String line = fileScanner.nextLine();
