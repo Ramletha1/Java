@@ -1,5 +1,7 @@
 // package Ex9_6581167;
 
+// Wongsatorn Suwannarit 6581167
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -40,6 +42,7 @@ public class Main {
         }
 
         actorGraph.findActor(chosenActor);      // find different actors with same name and save to resultSet
+        actorGraph.baconDegree();
         return true;
     }
 }
@@ -119,7 +122,8 @@ class ActorGraph {
         }
     }
 
-    public void findActor(HashSet<String> chosenActor) {     
+    public void findActor(HashSet<String> chosenActor) {
+        resultSet.clear();
         for (String input : chosenActor) {      // Find different people with same name
             for (String actor : workingMap.keySet()) {
                 if (actor.toLowerCase().contains(input.toLowerCase())) {
@@ -130,29 +134,86 @@ class ActorGraph {
     }
 
     public void baconDegree() {     // Using BFS
+        System.out.println("============================== Bacon degrees ==============================");
+        System.out.println("Valid actors = " + resultSet);
+        System.out.println();
         for (String actor : resultSet) {
             String start = actor;
-            String end = BACON;
+            String target = "Kevin Bacon";
 
             LinkedList<String> queue = new LinkedList<>();
             queue.add(start);
 
-            Set<String> order = new HashSet<>();
-            order.add(start);
+            Set<String> visited = new HashSet<>();
+            visited.add(start);
+
+            Map<String, String> parentMap = new HashMap<>();
             boolean found = false;
 
             while (!queue.isEmpty() && !found) {
                 String current = queue.poll();
 
                 for (DefaultEdge edge : costarGraph.edgesOf(current)) {
-                    String connectedVertex;
-                    if (costarGraph.getEdgeSource(edge).equals(current))
-                        connectedVertex = costarGraph.getEdgeSource(edge);
-                    else
-                        connectedVertex = costarGraph.getEdgeTarget(edge);
+                    String neighbor = costarGraph.getEdgeSource(edge).equals(current)
+                        ? costarGraph.getEdgeTarget(edge)
+                        : costarGraph.getEdgeSource(edge);
+                    
+                    if (!visited.contains(neighbor)) {
+                        visited.add(neighbor);
+                        parentMap.put(neighbor, current);
+                        queue.add(neighbor);
+
+                        if (neighbor.equals(target)) {     // Stop when target is found
+                            found = true;
+                            break;
+                        }
+                    }
                 }
             }
+
+            List<String> path = new LinkedList<>();
+            if (found) {
+                String current = target;
+                while (current != null) {   // Adding order backward'ly
+                    path.add(0, current);
+                    current = parentMap.get(current);
+                }
+                    // PRINT
+                System.out.printf("%s  >>  Bacon degree = %d\n\n", start, path.size()-1);
+                for (int i=0; i<path.size()-1; i++) {
+                    String actor1 = path.get(i);
+                    String actor2 = path.get(i+1);
+
+                    Set<String> movieActor1 = workingMap.get(actor1);
+                    Set<String> movieActor2 = workingMap.get(actor2);
+
+                    Set<String> sharedMovie = new HashSet<>(movieActor1);
+                    sharedMovie.retainAll(movieActor2);
+
+                    System.out.printf("%20s - %-20s %s\n", actor1, actor2, sharedMovie);
+                }
+                System.out.println();
+            } else {
+                System.out.println("Connection not found");
+            }
+
+            
+            //for (int i=0; i<path.size())
+
+            //for (String NO : path.vertexSet()) { degree++; }
+            //System.out.printf("%s  >>  Bacon degree = %d", start, degree);
+            /*int degree = 0;
+            String to;
+            for (String from : path.vertexSet()) {
+                if (degree++ == 0) {
+                    to = from; System.out.println("HEEE");
+                    continue;
+                }
+                System.out.printf("%s - %s\n", from, to);
+                to = from;
+            }*/
         }
+        System.out.println("============================== Bacon degrees ==============================");
     }
 
     public void baconParties() {
