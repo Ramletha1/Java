@@ -15,7 +15,35 @@ public class Main {
         String filePath = "/workspaces/Java/data_structures/assignments/Ex9_6581167/movies.txt";
         // String filePath = "/src/main/java/Ex9_6581167/movies.txt";
 
+        System.out.println("============================== Bacom parties ==============================");
         actorGraph.buildGraph(filePath);
+
+        while (true) {
+            System.out.println("\n\n============================== Bacom parties ==============================");
+            if (!askInput(actorGraph)) {
+                System.out.println("Exiting Program...");
+                break;
+            }
+        }
+    }
+
+    public static boolean askInput(ActorGraph actorGraph) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter name or surname, or 0 to quit");
+        String userInput[] = scanner.nextLine().split(",");
+
+        scanner.close();
+          
+        if (userInput[0].contains("0")) return false;
+
+        HashSet<String> chosenActor = new HashSet<>();
+        for (int i=0; i<userInput.length; i++) {
+            chosenActor.add(userInput[i].trim());
+        }
+
+        actorGraph.findActors
+        return true;
     }
 }
 
@@ -62,7 +90,6 @@ class ActorGraph {
             GreedyColoring<String, DefaultEdge> greedyColoring = new GreedyColoring<>(costarGraph);
             List<Set<String>> colorList = greedyColoring.getColoring().getColorClasses();
             
-            System.out.println("============================== Bacom parties ==============================");
             System.out.println("By GreedyColoring  >>  total parties = " + colorList.size());
             System.out.println();
             for (int i=0; i<colorList.size();i++) {
