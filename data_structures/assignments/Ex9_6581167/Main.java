@@ -51,9 +51,11 @@ class ActorGraph {
             }
             fileScanner.close();
             System.out.println("" + costarGraph.vertexSet());
-            System.out.println("\n\n\n" + costarGraph.edgeSet());
+            System.out.println("" + costarGraph.edgeSet());
+            System.out.println("" + costarGraph.vertexSet().size());
         }
         catch (FileNotFoundException e){
+            System.out.printf("Error: File not found (%s)\n", fileName);
             e.printStackTrace();
         }
     }
@@ -62,3 +64,8 @@ class ActorGraph {
     public void baconParties() { /* Arrange parties for Bacon */ }
     // You may use Map to keep data from input file as in Exercise 8
 }
+
+
+
+// Total movies = 60
+// Total actors = 85
