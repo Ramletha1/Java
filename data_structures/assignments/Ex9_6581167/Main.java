@@ -24,8 +24,6 @@ public class Main {
 class ActorGraph {
     private Graph<String, DefaultEdge> costarGraph;
     private Graph<String, DefaultEdge> conflictGraph;
-    // private GreedyColoring<String, DefaultEdge> greedyColorGraph;
-
 
     public static final String BACON = "Kevin Bacon";
 
@@ -45,30 +43,38 @@ class ActorGraph {
                 String[] data = line.split(";");        // Split ';' into array
                 String movie = data[0].trim();
 
-                /*for (int i=1; i<data.length; i++) {
-                    costarGraph.addVertex(data[i]);  // Check before/after every ';' of that line
+                for (int i=1; i<data.length; i++) {     // Add vertices and edges at the same time
+                    costarGraph.addVertex(data[i]);
                     for (int j=1; j<i; j++) {
                         costarGraph.addEdge(data[i], data[j]);
                     }
-                }*/
-                for (int i=1; i<data.length; i++) {
-                    costarGraph.addVertex(data[i]);
                 }
-
-                for (int i=1; i<data.length; i++) {
-                    for (int j=i+1; j<data.length; j++) {
-                        costarGraph.addEdge(data[i], data[j]);
-                    }
-                }
+                // for (int i=1; i<data.length; i++) costarGraph.addVertex(data[i]);    // Add vertices
+                // for (int i=1; i<data.length; i++) for (int j=i+1; j<data.length; j++) costarGraph.addEdge(data[i], data[j]); // Then edges
             }
             fileScanner.close();
+            costarGraph.removeVertex("Kevin Bacon");
+
             // System.out.println("" + costarGraph.vertexSet());
             // System.out.println("" + costarGraph.edgeSet());
             // System.out.println("" + costarGraph.vertexSet().size());
+
             GreedyColoring<String, DefaultEdge> greedyColoring = new GreedyColoring<>(costarGraph);
             List<Set<String>> colorList = greedyColoring.getColoring().getColorClasses();
+            
+            System.out.println("============================== Bacom parties ==============================");
+            System.out.println("By GreedyColoring  >>  total parties = " + colorList.size());
+            System.out.println();
             for (int i=0; i<colorList.size();i++) {
-                System.out.printf("Coloring [%d]: %s\n", i+1, colorList.get(i));
+                System.out.printf("Parties %d >> guests = %d", i+1, colorList.get(i).size());
+                Set<String> colorClass = colorList.get(i);
+                int count = 0;
+                for (String actor : colorClass) {
+                    if (count % 6 == 0) System.out.println();   // New line every 6 actors
+                    System.out.printf("%-20s", actor);
+                    count++;
+                }
+                System.out.printf("\n\n");
             }
         }
         catch (FileNotFoundException e){
