@@ -48,9 +48,10 @@ public class Main {
 
 class ActorGraph {
     private Graph<String, DefaultEdge> costarGraph;     
-    private GreedyColoring<String, DefaultEdge> conflictGraph;   
-    private TreeMap<String, LinkedHashSet<String>> workingMap;
-    private LinkedHashSet<String> resultSet;
+    private GreedyColoring<String, DefaultEdge> conflictGraph;      // GreedyColoring
+
+    private TreeMap<String, LinkedHashSet<String>> workingMap;      // storing all data from movies.txt
+    private LinkedHashSet<String> resultSet;    // actors from userInput + different actors with same name
 
     public static final String BACON = "Kevin Bacon";
 
@@ -89,10 +90,10 @@ class ActorGraph {
             }
             // BUILDING conflictGraph
             Graph<String, DefaultEdge> tempGraph = new SimpleGraph<>(DefaultEdge.class);
-            for (String vertex : costarGraph.vertexSet()) {     // Vertices
+            for (String vertex : costarGraph.vertexSet()) {     // get Vertices
                 tempGraph.addVertex(vertex);
             }
-            for (DefaultEdge edge : costarGraph.edgeSet()) {    // Edges
+            for (DefaultEdge edge : costarGraph.edgeSet()) {    // get Edges
                 String source = costarGraph.getEdgeSource(edge);
                 String target = costarGraph.getEdgeTarget(edge);
                 tempGraph.addEdge(source, target);
@@ -128,7 +129,31 @@ class ActorGraph {
         }
     }
 
-    public void baconDegree() { /* Find Bacon degree of given actor */ }
+    public void baconDegree() {     // Using BFS
+        for (String actor : resultSet) {
+            String start = actor;
+            String end = BACON;
+
+            LinkedList<String> queue = new LinkedList<>();
+            queue.add(start);
+
+            Set<String> order = new HashSet<>();
+            order.add(start);
+            boolean found = false;
+
+            while (!queue.isEmpty() && !found) {
+                String current = queue.poll();
+
+                for (DefaultEdge edge : costarGraph.edgesOf(current)) {
+                    String connectedVertex;
+                    if (costarGraph.getEdgeSource(edge).equals(current))
+                        connectedVertex = costarGraph.getEdgeSource(edge);
+                    else
+                        connectedVertex = costarGraph.getEdgeTarget(edge);
+                }
+            }
+        }
+    }
 
     public void baconParties() {
         List<Set<String>> colorList = conflictGraph.getColoring().getColorClasses();
