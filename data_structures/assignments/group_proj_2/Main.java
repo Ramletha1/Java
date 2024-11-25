@@ -20,8 +20,8 @@ public class Main {
     }
 
     public static boolean askInput(Scanner scanner) {
-        int N = 0;
-        String userInput;
+        int N, numInput;
+        String strInput;
 
         System.out.println("Enter N for N*N board (N must be at least 5)");
         while (true) {
@@ -32,12 +32,23 @@ public class Main {
                     continue;
                 }
                 break;
-            }
-            catch (NumberFormatException e) { System.out.println("Invalid input."); }
+            } catch (NumberFormatException e) { System.out.println("Invalid input."); }
         }
 
         Board board = new Board(N);
         board.printBoardID();
+
+        System.out.println("Enter Knight ID");
+        while (true) {
+            try {
+                numInput = Integer.parseInt(scanner.nextLine());
+                if (numInput < 0 || numInput > N*N) {
+                    System.out.println("Input must be according to Cell IDs.");
+                    continue;
+                }
+                break;
+            } catch (NumberFormatException e) { System.out.println("Invalid input."); }
+        }
 
         return true;
     }
@@ -50,15 +61,15 @@ class Board {
         this.N = N;
     }
 
-    public boolean printBoardID() {
+    public void printBoardID() {
         for (int i=0; i<N; i++) {
             if (i == 0) System.out.printf("%8s", "Cell IDs");
             else System.out.printf("%8s", " ");
 
             for (int j=0; j<N; j++) {
-                System.out.printf("%5d", j+(i*N)+1);
+                System.out.printf("%5d", j+(i*N));
             }
             System.out.println();
-        } return true;
+        }
     }
 }
