@@ -1,5 +1,7 @@
 // package EGCI221-Project1;
 import java.util.*;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
 
 public class Main {
     public static void main(String[] args) {
@@ -19,19 +21,19 @@ public class Main {
     }
 }
 
-class BoardPlacement {
-    private int row, col, moves;
-    private String[][] board;
+class KnightMoves {
+    private int N;
+    private int[] knightPos, castlePos;
 
     private static final int[][] knightMoves = {{ 2,-1},{ 2, 1},    // Up
                                                 {-2,-1},{-2, 1},    // Down
                                                 { 1,-2},{-1,-2},    // Left
                                                 { 1, 2},{-1, 2}};   // Right
 
-    public Board(int row, int col, int moves) {
+    public BoardPlacement(int row, int col, int moves) {
         this.row = row;
         this.col = col;
         this.moves = moves;
-        this.board = new board[row][col];
+        this.board = new board[N][N];
     }
 }
