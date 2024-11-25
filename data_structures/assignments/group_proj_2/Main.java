@@ -6,7 +6,11 @@ public Main {
         Scanner scanner = new Scanner(System.in);
         
         while (true) {
-            
+            if (!askInput) {
+                System.out.println("Exiting the program...");
+                break;
+            }
         }
+        scanner.close();
     }
 }
