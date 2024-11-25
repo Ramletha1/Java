@@ -89,6 +89,14 @@ class ActorGraph {
                         costarGraph.addEdge(data[i], data[j]);
                     }
                 }
+                
+                /*for (int i=1; i<data.length; i++) costarGraph.addVertex(data[i]);   // Add vertices
+                for (int i=1; i<data.length-1; i++) {       // Then add edges
+                    for (int j=i+1; j<data.length; j++) {
+                        costarGraph.addEdge(data[i], data[j]);
+                    }
+                }*/
+                
                 // --------------------
             }
             // BUILDING conflictGraph
@@ -139,7 +147,7 @@ class ActorGraph {
         System.out.println();
         for (String actor : resultSet) {
             String start = actor;
-            String target = "Kevin Bacon";
+            String target = BACON;
 
             LinkedList<String> queue = new LinkedList<>();
             queue.add(start);
@@ -196,9 +204,6 @@ class ActorGraph {
             } else {
                 System.out.println("Connection not found");
             }
-
-            
-            //for (int i=0; i<path.size())
 
             //for (String NO : path.vertexSet()) { degree++; }
             //System.out.printf("%s  >>  Bacon degree = %d", start, degree);
