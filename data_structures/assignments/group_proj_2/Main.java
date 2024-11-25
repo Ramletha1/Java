@@ -14,11 +14,19 @@ class BombPlacement {
 
 class Board {
     private int N;
+    private char[][] board;
     private ArrayList<BombPlacement> bombList;
 
-    public Board(int N) {                               // Constructor
+    public Board(int N) { // Constructor
         this.N = N;
+        this.board = new char[N][N]; 
         this.bombList = new ArrayList<>();
+        assignBoard();
+    }
+
+    public void assignBoard() {
+        board[0][0] = 'K';
+        board[N-1][N-1] = 'C';
     }
 
     public void addBomb(int row, int column) {
@@ -27,12 +35,12 @@ class Board {
 
     public boolean checkBomb(int row, int column) {    // row 2 col 1
         for (BombPlacement bomb : bombList) {       // Manual input check
-            if (bomb.row == row || bomb.column == column || Math.abs(bomb.row-row) == Math.abs(q.column-column)) return false;
+            //if (bomb.row == row || bomb.column == column || Math.abs(bomb.row-row) == Math.abs(q.column-column)) return false;
         }
         return true;
     }
 
-    public void solve() {
+    /*public void solve() {
         findSolution(0);                                        // Display total solution
         if (totalSolution>0) System.out.printf("There are %d possible solutions.\n\n", totalSolution);
         else System.out.println("No solution.");
@@ -55,31 +63,16 @@ class Board {
                 popQueen(row, col);
             }
         }
-    }
+    }*/
 
     public void displayBoard() {
-        char[][] board = new char[N][N];
-
-        for (int i=0; i<N; i++) {                                   // Fills board with '.' as empty space
-            for (int j=0; j<N; j++) {
-                board[i][j] = '.';
+        System.out.printf("%-15s", "Cell ID");
+        for (int i=1; i<N*N+1; i++) {
+            System.out.printf("%5d", i);
+            if (i % N == 0) {
+                System.out.printf("\n%15s", ' ');
             }
         }
-
-        for (QueenPlacement q : queenList) board[q.row][q.column] = 'Q';           // Assign Queen
-        for (QueenPlacement q : manualList) board[q.row][q.column] = 'Q';
-
-        System.out.printf("%10s", "");                              // Display board (only up-to N=99)
-        for (int i=0; i<N; i++) System.out.printf("%-3d", i+1);
-        for (int i=0; i<N; i++) {
-            System.out.printf("\nrow %-2d |", i+1);
-            for (int j=0; j<N; j++) {
-                System.out.printf("%3c", board[i][j]);
-            }
-        }
-        System.out.print("\n==========");
-        for (int i=0; i<N; i++) System.out.print("===");
-        System.out.println("");
     }
 }
 
@@ -123,7 +116,7 @@ public class Main {
         }
 
         if (input.equals("n")) { // No (Let program do the work)
-            board.solve();
+            //board.solve();
         } else {                 // Yes (Input manually)
             int row, col;
             while (true) {       // Ask row
@@ -142,7 +135,7 @@ public class Main {
                 } catch (NumberFormatException e) { }
                 System.out.printf("\nError. Please enter no more than %d.\n", N);
             }
-            board.manualInput(row, col);
+            //board.manualInput(row, col);
         }
 
         while (true) {          // Ask continue or exit
