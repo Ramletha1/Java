@@ -20,18 +20,25 @@ public class Main {
     }
 
     public static boolean askInput(Scanner scanner) {
+        int N = 0;
+        String userInput;
 
         System.out.println("Enter N for N*N board (N must be at least 5)");
         while (true) {
             try {
-                int N = Integer.parseInt(scanner.nextLine);
+                N = Integer.parseInt(scanner.nextLine());
+                if (N < 5) {
+                    System.out.println("N must be at least 5");
+                    continue;
+                }
                 break;
             }
-            catch (NumberFormatException e) {
-                System.out.println("Invalid input.");
-            }
+            catch (NumberFormatException e) { System.out.println("Invalid input."); }
+
             Board board = new Board(N);
+            board.printBoardID();
         }
+        return true;
     }
 }
 
@@ -40,5 +47,17 @@ class Board {
 
     public Board(int N) {
         this.N = N;
+    }
+
+    public void printBoardID() {
+        for (int i=0; i<N; i++) {
+            if (i == 0) System.out.printf("%8s", "Cell IDs");
+            else System.out.printf("%8s", " ");
+
+            for (int j=0; j<N; j++) {
+                System.out.printf("%5s", j+(i*N));
+            }
+            System.out.println();
+        }
     }
 }

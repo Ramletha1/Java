@@ -1,12 +1,10 @@
-make:
-	javac Main.java
-	java Main
+make: compile run
 
 compile:
-	javac Main.java
+	javac -cp "lib/*" Main.java
 
 run:
-	java Main
+	java -cp "lib/*:." Main
 
 git:
 	git add .
