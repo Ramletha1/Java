@@ -4,6 +4,9 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
 public class Main {
+    private static final int[][] knightMoves = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1},     // Up / Down
+                                                {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};    // Left / Right
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         
@@ -17,23 +20,25 @@ public class Main {
     }
 
     public static boolean askInput(Scanner scanner) {
-        String[][] board
+
+        System.out.println("Enter N for N*N board (N must be at least 5)");
+        while (true) {
+            try {
+                int N = Integer.parseInt(scanner.nextLine);
+                break;
+            }
+            catch (NumberFormatException e) {
+                System.out.println("Invalid input.");
+            }
+            Board board = new Board(N);
+        }
     }
 }
 
-class KnightMoves {
+class Board {
     private int N;
-    private int[] knightPos, castlePos;
 
-    private static final int[][] knightMoves = {{ 2,-1},{ 2, 1},    // Up
-                                                {-2,-1},{-2, 1},    // Down
-                                                { 1,-2},{-1,-2},    // Left
-                                                { 1, 2},{-1, 2}};   // Right
-
-    public BoardPlacement(int row, int col, int moves) {
-        this.row = row;
-        this.col = col;
-        this.moves = moves;
-        this.board = new board[N][N];
+    public Board(int N) {
+        this.N = N;
     }
 }
