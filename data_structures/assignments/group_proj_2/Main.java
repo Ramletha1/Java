@@ -1,11 +1,11 @@
 // package EGCI221-Project1;
 import java.util.*;
 
-class QueenPlacement {
+class BombPlacement {
     int row;
     int column;
 
-    public QueenPlacement(int row, int column) {
+    public BombPlacement(int row, int column) {
         this.row = row;
         this.column = column;
     }
@@ -14,46 +14,22 @@ class QueenPlacement {
 
 class Board {
     private int N;
-    private int totalSolution;
-    private ArrayList<QueenPlacement> queenList;
-    private ArrayList<QueenPlacement> manualList;
+    private ArrayList<BombPlacement> bombList;
 
     public Board(int N) {                               // Constructor
         this.N = N;
-        this.totalSolution = 0;
-        this.queenList = new ArrayList<>();
-        this.manualList = new ArrayList<>();
+        this.bombList = new ArrayList<>();
     }
 
-    public void pushQueen(int row, int column) {
-        queenList.add(new QueenPlacement(row, column));
+    public void addBomb(int row, int column) {
+        bombList.add(new BombPlacement(row, column));
     }
 
-    public void popQueen(int row, int column) {
-        if (!queenList.isEmpty()) queenList.remove(queenList.size() - 1);
-    }
-
-    public boolean queenCheck(int row, int column) {    // row 2 col 1
-        for (QueenPlacement q : manualList) {       // Manual input check
-            if (q.row == row || q.column == column || Math.abs(q.row-row) == Math.abs(q.column-column)) return false;
-        }
-        for (QueenPlacement q : queenList) {        // Auto check
-            if (q.row == row || q.column == column || Math.abs(q.row-row) == Math.abs(q.column-column)) return false;
+    public boolean checkBomb(int row, int column) {    // row 2 col 1
+        for (BombPlacement bomb : bombList) {       // Manual input check
+            if (bomb.row == row || bomb.column == column || Math.abs(bomb.row-row) == Math.abs(q.column-column)) return false;
         }
         return true;
-    }
-
-    public boolean manualCheck(int row) {
-        for (QueenPlacement q : manualList) {
-            if (q.row == row) return false;
-        }
-        return true;
-    }
-
-    public void manualInput(int row, int col) {
-        manualList.add(new QueenPlacement(row, col));
-        displayBoard();
-        solve();
     }
 
     public void solve() {
