@@ -34,10 +34,11 @@ public class Main {
                 break;
             }
             catch (NumberFormatException e) { System.out.println("Invalid input."); }
-
-            Board board = new Board(N);
-            board.printBoardID();
         }
+
+        Board board = new Board(N);
+        board.printBoardID();
+
         return true;
     }
 }
@@ -49,15 +50,15 @@ class Board {
         this.N = N;
     }
 
-    public void printBoardID() {
+    public boolean printBoardID() {
         for (int i=0; i<N; i++) {
             if (i == 0) System.out.printf("%8s", "Cell IDs");
             else System.out.printf("%8s", " ");
 
             for (int j=0; j<N; j++) {
-                System.out.printf("%5s", j+(i*N));
+                System.out.printf("%5d", j+(i*N)+1);
             }
             System.out.println();
-        }
+        } return true;
     }
 }
