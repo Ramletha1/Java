@@ -50,11 +50,11 @@ public class Main {
 
 
 class ActorGraph {
-    private Graph<String, DefaultEdge> costarGraph;     
+    private Graph<String, DefaultEdge> costarGraph;                 // Actors connected to each other, purpose is to find path (actuintance)
     private GreedyColoring<String, DefaultEdge> conflictGraph;      // GreedyColoring
 
     private TreeMap<String, LinkedHashSet<String>> workingMap;      // storing all data from movies.txt
-    private LinkedHashSet<String> resultSet;    // actors from userInput + different actors with same name
+    private LinkedHashSet<String> resultSet;                        // actors from userInput + different actors with same name
 
     public static final String BACON = "Kevin Bacon";
 
@@ -71,11 +71,11 @@ class ActorGraph {
 
             while (fileScanner.hasNextLine()) {         // Check every existing line
                 String line = fileScanner.nextLine().trim();
-                String[] data = line.split(";");        // Split ';' into array
+                String[] data = line.split(";");  // Split ';' into array
                 String movie = data[0];
 
                 // BUILDING workingMap
-                HashSet<String> actors = new HashSet<>();
+                HashSet<String> actors = new HashSet<>();   // Storing as "movie: actor, actor..."
                 for (int i=1; i < data.length; i++) {
                     actors.add(data[i]);
                 }
@@ -100,18 +100,18 @@ class ActorGraph {
                 // --------------------
             }
             // BUILDING conflictGraph
-            Graph<String, DefaultEdge> tempGraph = new SimpleGraph<>(DefaultEdge.class);
-            for (String vertex : costarGraph.vertexSet()) {     // get Vertices
+            Graph<String, DefaultEdge> tempGraph = new SimpleGraph<>(DefaultEdge.class);    // Copying from costarGraph
+            for (String vertex : costarGraph.vertexSet()) {     // get Vertices from costarGraph
                 tempGraph.addVertex(vertex);
             }
-            for (DefaultEdge edge : costarGraph.edgeSet()) {    // get Edges
+            for (DefaultEdge edge : costarGraph.edgeSet()) {    // get Edges from costarGraph
                 String source = costarGraph.getEdgeSource(edge);
                 String target = costarGraph.getEdgeTarget(edge);
                 tempGraph.addEdge(source, target);
             }
-            tempGraph.removeVertex(BACON);
+            tempGraph.removeVertex(BACON);                      // Remove Bacon since it's Bacon party
 
-            conflictGraph = new GreedyColoring<>(tempGraph);
+            conflictGraph = new GreedyColoring<>(tempGraph);    // Convert to GreedyColoring
             fileScanner.close();
             // --------------------
         }
@@ -142,6 +142,10 @@ class ActorGraph {
     }
 
     public void baconDegree() {     // Using BFS
+        if (resultSet.isEmpty()) {
+            System.out.println("Actor not found");
+            return;
+        }
         System.out.println("============================== Bacon degrees ==============================");
         System.out.println("Valid actors = " + resultSet);
         System.out.println();
