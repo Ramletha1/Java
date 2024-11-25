@@ -8,6 +8,11 @@ compile:
 run:
 	java -cp "lib/*:." Main
 
+git:
+	git add .
+	git commit -m ~
+	git push
+
 
 # Ex9_6581167 Direcory:
 
