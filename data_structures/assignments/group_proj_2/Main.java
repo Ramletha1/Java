@@ -1,151 +1,202 @@
-// package EGCI221-Project1;
+// package EGCI221-Project2;
+
+// By Wongsatorn Suwannarit
+
 import java.util.*;
+import org.jgrapht.*;
+import org.jgrapht.graph.*;
+import org.jgrapht.alg.shortestpath.BFSShortestPath;;
 
-class BombPlacement {
-    int row;
-    int column;
+class Cell { // Cells
+    int row, col;
+    char type;
 
-    public BombPlacement(int row, int column) {
+    public Cell(int row, int col, char type) {
         this.row = row;
-        this.column = column;
+        this.col = col;
+        this.type = type;
     }
-
-}
-
-class Board {
-    private int N;
-    private char[][] board;
-    private ArrayList<BombPlacement> bombList;
-
-    public Board(int N) { // Constructor
-        this.N = N;
-        this.board = new char[N][N]; 
-        this.bombList = new ArrayList<>();
-        assignBoard();
-    }
-
-    public void assignBoard() {
-        board[0][0] = 'K';
-        board[N-1][N-1] = 'C';
-    }
-
-    public void addBomb(int row, int column) {
-        bombList.add(new BombPlacement(row, column));
-    }
-
-    public boolean checkBomb(int row, int column) {    // row 2 col 1
-        for (BombPlacement bomb : bombList) {       // Manual input check
-            //if (bomb.row == row || bomb.column == column || Math.abs(bomb.row-row) == Math.abs(q.column-column)) return false;
-        }
-        return true;
-    }
-
-    /*public void solve() {
-        findSolution(0);                                        // Display total solution
-        if (totalSolution>0) System.out.printf("There are %d possible solutions.\n\n", totalSolution);
-        else System.out.println("No solution.");
-    }
-
-    public void findSolution(int row) {
-        if (row == N) {
-            totalSolution++;
-            if (totalSolution==1) { 
-                displayBoard();
-                System.out.println("Calculating...");
-            }
-        }
-
-        if (!manualCheck(row)) findSolution(row+1); // Check Manual to skip row
-        for (int col=0; col<N; col++) {
-            if (queenCheck(row, col)) {     // Check Queen backtracking
-                pushQueen(row, col);
-                findSolution(row+1);        // Proceed to next row
-                popQueen(row, col);
-            }
-        }
-    }*/
-
-    public void displayBoard() {
-        System.out.printf("%-15s", "Cell ID");
-        for (int i=1; i<N*N+1; i++) {
-            System.out.printf("%5d", i);
-            if (i % N == 0) {
-                System.out.printf("\n%15s", ' ');
-            }
-        }
+    
+    @Override
+    public String toString() {
+        return type + "";
     }
 }
 
 public class Main {
+// ==============================================================================================================================
+    public static final int[][] knightMoves = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1},     // Up / Down
+                                               {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};    // Left / Right
+    static int N, knightPos, castlePos;
+// ==============================================================================================================================
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        Map<Integer, Cell> board = new HashMap<>();
+        
+        while (true) {
+            askInput(board, scanner); 
+            printBoard(board);
+            BFS(board);
 
-        System.out.println("-----------  N-Queen NxN-Board  -----------");
-        while (true) {      // Loop askInput until user want to exit program
-            if (!askInput(scanner)) {
-                System.out.println("Exiting the program..");
+            System.out.println("New game? (y - continue, other - exit)");
+            if (scanner.nextLine().contains("y")) continue;
+            else {
+                System.out.println("Exiting the program...");
                 break;
             }
-            System.out.println("============================================");
         }
         scanner.close();
     }
+// ==============================================================================================================================
+    public static void askInput(Map<Integer, Cell> board, Scanner scanner) {
+        int numInput;
+        String[] strInput;
 
-    public static boolean askInput(Scanner scanner) {
-        String input;
-        int N;
-
-        while (true) {            // Ask for N size
-            System.out.println("Enter N for N*N board (N must be at least 5)");
+        // Ask 1 : Choose Board size
+        System.out.println("Enter N for N*N board (N must be at least 5)");
+        while (true) {
             try {
                 N = Integer.parseInt(scanner.nextLine());
-                if (N>=5) break;
-            } catch (NumberFormatException e) { }
-            System.out.println("\nError. Please input 4 or more only.");
+                if (N < 5) {
+                    System.out.println("N must be at least 5");
+                    continue;
+                }
+                break;
+            } catch (NumberFormatException e) { System.out.println("Invalid input."); }
         }
 
-        Board board = new Board(N);     // Create board
-        board.displayBoard();           // Print empty board
+        // Initialize for Empty Board
+        for (int cellID=0; cellID<N*N; cellID++) board.put(cellID, new Cell(cellID/N, cellID%N, ' '));
+        printBoard(board);
 
-
-        while (true) {           // ASk for Manual Input
-            System.out.println("Place a bomb or not? (y for yes, n for no)");
-            input = scanner.nextLine().toLowerCase();
-            if (input.equals("y") || input.equals("n")) break;
-            System.out.println("\nError. Please enter valid input.");
-        }
-
-        if (input.equals("n")) { // No (Let program do the work)
-            //board.solve();
-        } else {                 // Yes (Input manually)
-            int row, col;
-            while (true) {       // Ask row
-                System.out.print("Enter row: ");
-                try {
-                    row = Integer.parseInt(scanner.nextLine())-1;
-                    if (row<N && row>=0) break;
-                } catch (NumberFormatException e) { }
-                System.out.printf("\nError. Please enter no more than %d.\n", N);
-            }
-            while (true) {      // Ask column
-                System.out.print("Enter column: ");
-                try {
-                    col = Integer.parseInt(scanner.nextLine())-1;
-                    if (col<N && col>=0) break;
-                } catch (NumberFormatException e) { }
-                System.out.printf("\nError. Please enter no more than %d.\n", N);
-            }
-            //board.manualInput(row, col);
-        }
-
-        while (true) {          // Ask continue or exit
-            System.out.println("1: Continue  2: Exit");
+        // Ask 2 : Put Knight
+        System.out.println("Enter Knight ID");
+        while (true) {
             try {
-                input = scanner.nextLine();
-                if (input.equals("1")) return true;
-                else if (input.equals("2")) return false;
-            } catch (NumberFormatException e) { }
-            System.out.println("\nError. Please enter valid input");
+                numInput = Integer.parseInt(scanner.nextLine());
+                if (numInput < 0 || numInput > (N*N)-1) {
+                    System.out.println("Input must be according to Cell IDs.");
+                    continue;
+                } else {
+                    if (board.get(numInput).type != ' ') {
+                        System.out.println("This cell is already occupied.");
+                        continue;
+                    }
+                }
+                break;
+            } catch (NumberFormatException e) { System.out.println("Invalid input."); }
+        }
+        knightPos = numInput;   // Store Knight initial position inside global variable
+        setCell(board, knightPos, 'K'); // Add Knight to board
+
+        // Ask 3 : Put Castle
+        System.out.println("Enter Castle ID");
+        while (true) {
+            try {
+                numInput = Integer.parseInt(scanner.nextLine());
+                if (numInput < 0 || numInput > (N*N)-1) {
+                    System.out.println("Input can only be from given Cell IDs.");
+                    continue;
+                } else {
+                    if (board.get(numInput).type != ' ') {
+                        System.out.println("This cell is already occupied.");
+                        continue;
+                    }
+                }
+                break;
+            } catch (NumberFormatException e) { System.out.println("Invalid input."); }
+        }
+        castlePos = numInput;   // Store Castle initial position inside global variable
+        setCell(board, castlePos, 'C'); // Add Castle to board
+
+        // Ask 4 : Put Bomb
+        System.out.println("Enter bomb IDs separated by comma (Invalid IDs will be ignored)");
+        strInput = scanner.nextLine().split(",");
+        for (String bombInput : strInput) {
+            try {
+                int bombID = Integer.parseInt(bombInput);
+                if (bombID < 0 || bombID > (N*N)-1) continue;   // Ignore Invalid number input
+                setCell(board, bombID, 'b');    // Add BOMB to Board
+            } catch (NumberFormatException e) { /* Ignore Error Input */ }
         }
     }
+// ==============================================================================================================================
+    public static void setCell(Map<Integer, Cell> board, int cellID, char type) {
+        if (board.get(cellID).type == ' ') board.get(cellID).type = type;
+    }
+// ==============================================================================================================================
+    public static void printBoard(Map<Integer, Cell> board) {   // Printing at start
+        System.out.printf("%8s", "Cell IDs");
+        for (int cellID=0; cellID<N*N; cellID++) {
+            System.out.printf("%5d: %2s", cellID, board.get(cellID).type);
+            if (cellID%N == N-1) System.out.printf("\n%8s", "");
+        }
+        System.out.println();
+    }
+// ==============================================================================================================================
+    public static void printPath(GraphPath<Integer, DefaultEdge> path, HashSet<Integer> bombCell) {
+        int moveCount = 0;
+        for (int move : path.getVertexList()) {
+            if (moveCount == 0) System.out.printf("Initially, Knight at [%d]\n", knightPos, "");
+            else System.out.printf("Move %d --> Jump to [%d]\n", moveCount, move, "");
+            for (int cellID=0; cellID<N*N; cellID++) {
+                System.out.printf("%5d: ", cellID);
+                String type =   (bombCell.contains(cellID)) ? "b"
+                              : (cellID == move) ? "K*"
+                              : (cellID == castlePos) ? "C*"
+                              : "";
+                System.out.printf("%2s", type);
+                if (cellID%N == N-1) System.out.printf("\n", "");
+            }
+            if (moveCount++ == 0) System.out.printf("\nBest route to Castle = %d moves.\n", path.getLength());
+            System.out.println();
+        }
+    }
+// ==============================================================================================================================
+    public static void BFS(Map<Integer, Cell> board) {  // *** BREADTH-FIRST SEARCH ***
+        Graph<Integer, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
+        HashSet<Integer> bombCell = new HashSet<>();    // To store Bomb cellID
+
+        for (Map.Entry<Integer, Cell> entry : board.entrySet()) {
+            if (entry.getValue().type != 'b') {     // Add valid CellID as vertex
+                graph.addVertex(entry.getKey());
+                // System.out.println("Adding [" + entry.getKey() + "]: " + entry.getValue());
+            }
+            else bombCell.add(entry.getKey());      // Store bomb data for later use
+        }
+
+        for (Integer cellID : graph.vertexSet()) {  // Add valid moves as edges
+            Cell cell = board.get(cellID);
+            for (int[] move : knightMoves) {    // Check KnightMove rule
+                int nextRow = cell.row + move[0];
+                int nextCol = cell.col + move[1];
+
+                if (isValidMove(board, nextRow, nextCol)) { // Function check for boundary and Bomb
+                    int nextCell = (nextRow * N) + nextCol;
+                    graph.addEdge(cellID, nextCell);
+                }
+            }
+        }
+        BFSShortestPath<Integer, DefaultEdge> bfs = new BFSShortestPath<>(graph);   // Use build-in algorithm
+        GraphPath<Integer, DefaultEdge> path = bfs.getPath(knightPos, castlePos);   // Finding all possible path bfs.getPath(SOURCE, TARGET);
+
+        if (path == null) System.out.println("No path found.");
+        else printPath(path, bombCell);
+    }
+// ==============================================================================================================================
+    public static boolean isValidMove(Map<Integer, Cell> board, int row, int col) {
+        if (row < 0 || row >= N || col < 0 || col >= N) return false;   // Check boundary
+        int cellID = (row * N) + col;
+        return board.get(cellID).type != 'b';   // B O M B ! ! !
+    }
+// ==============================================================================================================================
 }
+
+/*
+
+int CellID = (row * N) + col;   // Row & Column to CellID
+
+int row = CellID/N;     // CellID to Row
+int col = CellID%N;     // CellID to Column
+
+*/
