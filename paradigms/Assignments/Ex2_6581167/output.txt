@@ -1,16 +1,16 @@
-Platform        MAU(thousands)       YAU(billions)     >100 millions
+Platform        MAU(thousands)       YAU(billions)     >500 millions
 ======================================================================
-Discord             150,000              0.150             yes
+Discord             150,000              0.150              no
 Douyin              755,000              0.755             yes
 Facebook          3,650,000              3.650             yes
 Instagram         2,040,000              2.040             yes
-Line                178,000              0.178             yes
-LinkedIn            424,000              0.424             yes
-Pinterest           498,000              0.498             yes
-Reddit              430,000              0.430             yes
+Line                178,000              0.178              no
+LinkedIn            424,000              0.424              no
+Pinterest           498,000              0.498              no
+Reddit              430,000              0.430              no
 Snapchat            800,000              0.800             yes
 TikTok            1,500,000              1.500             yes
-Tumblr              135,000              0.135             yes
+Tumblr              135,000              0.135              no
 WeChat            1,340,000              1.340             yes
 WhatsApp          2,680,000              2.680             yes
 X                   611,000              0.611             yes

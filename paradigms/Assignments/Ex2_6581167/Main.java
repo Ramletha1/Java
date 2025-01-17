@@ -6,18 +6,18 @@ import java.io.*;
 
 public class Main {
     public static void main (String[] args) {
-        File inFile = new File("platforms.txt");
-        File outFile = new File("output.txt");
-        // File inFile = new File("src/main/Java/Ex2_6581167/platforms.txt");
-        // File outFile = new File("src/main/Java/Ex2_6581167/output.txt");
+        File inFile = new File("platforms.txt");                                                        // For VSCode
+        File outFile = new File("output.txt");                                                          // For VSCode
+        // File inFile = new File("src/main/Java/Ex2_6581167/platforms.txt");                           // For NetBean
+        // File outFile = new File("src/main/Java/Ex2_6581167/output.txt");                             // For NetBean
         int threshold;
 
 
         // Ask for MAU Threshold
         Scanner input = new Scanner(System.in);
         System.out.println("=".repeat(70));
-        System.out.println("Read platform data from " + inFile.getAbsolutePath());
-        // System.out.println("Read platform data from " + inFile.getPath());
+        System.out.println("Read platform data from " + inFile.getAbsolutePath());                      // For VSCode
+        // System.out.println("Read platform data from " + inFile.getPath());                           // For NetBean
         System.out.println("Enter MAU threshold in millions =");
         while (true) {
             try {
@@ -26,8 +26,8 @@ public class Main {
             } catch (NumberFormatException e) { System.out.println("Please enter valid input."); }
         }
         input.close();
-        System.out.println("Write output " + outFile.getAbsolutePath());
-        // System.out.println("Write output " + outFile.getPath());
+        System.out.println("Write output " + outFile.getAbsolutePath());                                // For VSCode
+        // System.out.println("Write output " + outFile.getPath());                                     // For NetBean
         System.out.println("=".repeat(70));
 
 
