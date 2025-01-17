@@ -8,6 +8,8 @@ public class Main {
     public static void main (String[] args) {
         File inFile = new File("platforms.txt");
         File outFile = new File("output.txt");
+        // File inFile = new File("src/main/Java/Ex2_6581167/platforms.txt");
+        // File outFile = new File("src/main/Java/Ex2_6581167/output.txt");
         int threshold;
 
 
@@ -15,6 +17,7 @@ public class Main {
         Scanner input = new Scanner(System.in);
         System.out.println("=".repeat(70));
         System.out.println("Read platform data from " + inFile.getAbsolutePath());
+        // System.out.println("Read platform data from " + inFile.getPath());
         System.out.println("Enter MAU threshold in millions =");
         while (true) {
             try {
@@ -24,6 +27,7 @@ public class Main {
         }
         input.close();
         System.out.println("Write output " + outFile.getAbsolutePath());
+        // System.out.println("Write output " + outFile.getPath());
         System.out.println("=".repeat(70));
 
 
