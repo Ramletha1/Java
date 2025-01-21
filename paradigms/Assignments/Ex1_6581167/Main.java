@@ -1,5 +1,7 @@
 // Wongastorn Suwannarit 6581167
 
+// package Ex1_6581167;
+
 import java.util.*;
 
 public class Main {

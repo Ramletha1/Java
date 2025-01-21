@@ -1,6 +1,8 @@
 // By Wongsatorn Suwannarit 6581167
 // This code is written in Codespace & VSCode
 
+// package Ex2_6581167;
+
 import java.util.*;
 import java.io.*;
 
