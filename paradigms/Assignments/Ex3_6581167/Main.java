@@ -13,8 +13,9 @@ class Player {
     protected int birthyear, age;
 
     public Player(String nm, int by) {
-        name = nm;
-        birthyear = by;
+        this.name = nm;
+        this.birthyear = by;
+        this.age = CURRENT_YEAR - by;
     }
 
     public String getName() {
@@ -30,42 +31,66 @@ class Player {
     }
 }
 
-/* class FB_Player {
-    public FB_Player(String nm, int by) {
-        Player.
+class FootballPlayer extends Player {
+    public FootballPlayer(String nm, int by) {
+        super(nm, by);
+    }
+
+    @Override
+    public void printPersonalData() {
+        System.out.printf("%-25s born %-7d age = %-2d\n", getName(), birthyear, age);
+    }
+
+    @Override
+    public void printStat() {
+.
     }
 }
 
-class BB_Player {
+class BasketballPlayer extends Player {
+    public BasketballPlayer(String nm, int by) {
+        super(nm, by);
+    }
 
-} */
+    @Override
+    public void printPersonalData() {
+        System.out.printf("%-25s born %-7d age = %-2d\n", getName(), birthyear, age);
+    }
+
+    @Override
+    public void printStat() {
+        
+    }
+}
 
 public class Main {
     public static void main (String[] args) {
         File inFile = new File("players.txt");
-        Player[] allPlayers = new Player[Constant.TOTAL_PLAYER];
+        Player[] players = new Player[Constant.TOTAL_PLAYER];
 
         try {
             Scanner readFile = new Scanner(inFile);
-            for (int i=0; i<12; i++) {
+            for (int i=0; i<players.length; i++) {
                 String line = readFile.nextLine();
-                String[] col = line.trim().split(",");
+                String[] col = line.trim().split("\\s*,\\s*");
                 
-                if (col[0].contains("B")) {
-                    System.out.printf("BasketBall");
-                } else {
-                    System.out.printf("FootBall  ");
+                if (col[0].equalsIgnoreCase("B")) {
+                    //System.out.printf("\nBasketBall");
+                    players[i] = new BasketballPlayer(col[1],Integer.parseInt(col[2]));
+                } else if (col[0].equalsIgnoreCase("F")) {
+                    //System.out.printf("\nFootBall  ");
+                    players[i] = new FootballPlayer(col[1],Integer.parseInt(col[2]));
                 }
-
-                for (int j = 1; j<col.length; j++) {
-                    System.out.printf(" %-25s", col[j].trim());
-                } System.out.println();
             }
             readFile.close();
         } catch (Exception e) { System.err.println(e); }
 
-        for (Player player : allPlayers) {
-            System.out.println(player.age);
+
+        System.out.println("=== All Player data (by reverse order) ===");
+        for (int i = players.length-1; i>=0; i--) {
+            players[i].printPersonalData();
         }
+
+        System.out.println("=== Football player statistics (by input order)");
     }
 }
