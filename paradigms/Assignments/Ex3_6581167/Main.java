@@ -1,3 +1,6 @@
+// By Wongatorn Suwannarit 6581167
+// This code is written in Codespace & VSCode
+
 // package Ex3_6581167;
 
 import java.util.*;
@@ -88,7 +91,8 @@ class BasketballPlayer extends Player {
 
 public class Main {
     public static void main (String[] args) {
-        File inFile = new File("players.txt");
+        File inFile = new File("players.txt");                                 // VSCode
+        // File inFile = new File("src/main/java/Ex3_6581096/players.txt");    // NetBean
         Player[] allPlayers = new Player[Constant.TOTAL_PLAYER];
 
         try {
