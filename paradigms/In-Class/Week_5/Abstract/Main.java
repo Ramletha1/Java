@@ -95,5 +95,6 @@ public class Main {
                 break;
             } else { continue; }
         }
+        userInput.close();
     }
 }
