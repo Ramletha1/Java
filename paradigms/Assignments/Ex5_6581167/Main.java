@@ -20,9 +20,11 @@ class InvalidNumberException extends Exception {
 
 
 
-class Company implements Comparable<Company> {
+class Company extends java.lang.Object implements Comparable<Company> {
     private String name;
     private int year, marketValue, profit, sales;
+
+    public Company() { super(); }
 
     public Company(String n, int y, int mv, int p, int s) {
         this.name = n;
