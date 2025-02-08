@@ -92,7 +92,7 @@ class BasketballPlayer extends Player {
 public class Main {
     public static void main (String[] args) {
         File inFile = new File("players.txt");                                 // VSCode
-        // File inFile = new File("src/main/java/Ex3_6581096/players.txt");    // NetBean
+        // File inFile = new File("src/main/java/Ex3_6581167/players.txt");    // NetBean
         Player[] allPlayers = new Player[Constant.TOTAL_PLAYER];
 
         try {
