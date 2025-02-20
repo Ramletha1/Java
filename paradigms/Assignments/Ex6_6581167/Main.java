@@ -11,12 +11,26 @@ class OneCard {
     private int suit;
     private int rank;
 
-    public OneCard(int score) { this.score = score; }
+    public OneCard(int score) {
+        this.score = score;
+        this.suit = score / 13;
+        this.rank = score % 13;
+    }
 }
 
 class CardThread extends Thread {
     private PrintWriter write;
     private ArrayList<OneCard> randomCards;
+
+    public CardThread() {
+        randomCards = new ArrayList<OneCard>();
+    }
+
+    public void createCard() {
+        for (int i = 0; i < 52; i++) {
+            randomCards.add(new OneCard(i));
+        }
+    }
 
     public void run() {
         // Create PrintWriter object to write result to a separate file
@@ -40,7 +54,7 @@ class CardThread extends Thread {
 public class Main {
     public static void main(String[] args) {
         Scanner ask = new Scanner(System.in);
-        
+
 
         CardThread a = new CardThread();
         a.run();
