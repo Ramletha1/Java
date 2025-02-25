@@ -1,7 +1,7 @@
 // By Wongsatorn Suwannarit 6581167
 // This code is written in VSCode.
 
-// package Ex6_6581167;
+// package Ex6_6581167;                             // For NetBeans
 
 import java.util.*;
 import java.io.*;
@@ -51,7 +51,9 @@ class CardThread extends Thread {
     }
 
     public void run() {
-        try (PrintWriter write = new PrintWriter(new File("T" + this.threadNumber))) {
+        // File filePath = new File("src/main/java/Ex6_6581167/" + "T" + this.ThreadNumber + ".txt");               For NetBeans
+        // try(PrintWriter write = new PrintWriter(filePath)){                                                      For NetBeans
+        try (PrintWriter write = new PrintWriter(new File("T" + this.threadNumber + ".txt"))) {                  // For VSCode
             while (true) {
                 for (int i=0; i<CONSTANT.DRAW; ) {
                     OneCard temp = new OneCard();
