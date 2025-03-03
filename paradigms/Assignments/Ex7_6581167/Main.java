@@ -166,7 +166,7 @@ public class Main {
                     thread.setRound(round);
                     thread.setSignal(true);
                 }
-                for (BankThread thread : allThreads) allThreads.forEach(BankThread::threadNotify);
+                allThreads.forEach(BankThread::threadNotify);
             }
 
             threadSleep(7 * round + 20);
