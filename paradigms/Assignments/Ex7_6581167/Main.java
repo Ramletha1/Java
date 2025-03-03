@@ -29,14 +29,16 @@ class BankThread extends Thread {
     public void accountExchange() throws InterruptedException, BrokenBarrierException { this.sharedAccount = exchanger.exchange(sharedAccount); }
     
     public void run() {
-        try {
-            barrier.await();
-            if (modeD) {
-                sharedAccount.deposit(rounds);
-            } else {
-                sharedAccount.withdraw(rounds);
-            }
-        } catch (InterruptedException | BrokenBarrierException e) { e.printStackTrace(); }
+        for (int i = 0; i <= rounds; i++) {
+            try {
+                barrier.await();
+                if (modeD) {
+                    sharedAccount.deposit(i);
+                } else {
+                    sharedAccount.withdraw(i);
+                }
+            } catch (InterruptedException | BrokenBarrierException e) { e.printStackTrace(); }
+        }
         // Loop for banking simulation. In each simulation:        
         //  (1) Wait until main thread gets #rounds from user and pass it to BankThread.
         
@@ -66,18 +68,21 @@ class Account {
     public int    getBalance()       { return balance; }
     
     public void deposit(int round) {
-        String thisThread = String.format("%-4s >> ", Thread.currentThread().getName());
-        System.out.println(thisThread + "manage     " + this.name + " (Balance = " + this.balance + ")");
-
-        int money = rand.nextInt(1,100);
-        balance += money;
+        String thisThread = String.format("%-4s >>", Thread.currentThread().getName());
+        if (round == 0) 
+            System.out.println(thisThread + "manage     " + this.name + " (Balance = " + this.balance + ")");
+        else {
+            int money = rand.nextInt(1,100);
+            balance += money;
+            System.out.printf("%s round %-5d %s %+,d balance = %d\n", thisThread, round, this.name, money, balance);
+        }
         // Random money (1 to 100) to deposit; update the balance
         // Report thread activity (see example output)
     }
     
     public void withdraw(int round) {
         if (balance == 0) {
-            String thisThread = String.format("%-4s >> ", Thread.currentThread().getName());
+            String thisThread = String.format("%-4s >>", Thread.currentThread().getName());
             System.out.println(thisThread + "withdrawal fails (Balance = 0)");
             return;
         }
@@ -112,11 +117,11 @@ public class Main {
 
         for (int i = 0; i < accounts.length; i++) {
             // Deposit threads
-            BankThread depositThread = new BankThread("D" + i, accounts[i], true);
+            BankThread depositThread = new BankThread("D" + (i+1), accounts[i], true);
             depositThread.setBarrier(barrier);
             depositThread.setExchanger(exchanger);
             // Withdraw threads
-            BankThread withdrawThread = new BankThread("W" + i, accounts[i], false);
+            BankThread withdrawThread = new BankThread("W" + (i+1), accounts[i], false);
             withdrawThread.setBarrier(barrier);
             withdrawThread.setExchanger(null);
             allThreads.addAll(Arrays.asList(depositThread, withdrawThread));
@@ -126,16 +131,17 @@ public class Main {
         boolean exchange = false;
         while (round != -1) {
             while (true) {
-                System.out.println(thisThread + "Enter #rounds for a new simulation (-1 to quit)");
+                System.out.println("\n\n" + thisThread + "Enter #rounds for a new simulation (-1 to quit)");
                 try {
                     round = Integer.parseInt(keyboardScan.nextLine());
                     if (round == -1 || round > 0) break;
                     else throw new InvalidNumberException("");
                 } catch (NumberFormatException e) { System.out.println("Invalid format!"); }
                   catch (InvalidNumberException e) { System.err.println("Invalid number!"); }
-            } if (round == -1) break;         // Quit simulation & Final Balance Report
-
-            if (exchange) {            // 2nd simulation onwards > Exchange deposit accounts
+            }
+            
+            if (round == -1) break;         // Quit simulation & Final Balance Report
+            if (exchange) {                 // 2nd simulation onwards > Exchange deposit accounts
                 for (BankThread thread : allThreads) {
                     if (thread.isDeposit()) {
                         try {
@@ -143,11 +149,17 @@ public class Main {
                         } catch (InterruptedException | BrokenBarrierException e) { e.printStackTrace(); }
                     }
                 }
-            } else exchange = true;    // 1st simulation
+            } else exchange = true;         // 1st simulation
 
             for (BankThread thread : allThreads) {
                 thread.setRound(round);
                 thread.start();
+            }
+
+            for (BankThread thread : allThreads) {
+                try {
+                    thread.join();
+                } catch (InterruptedException e) { e.printStackTrace(); }
             }
         }
         keyboardScan.close();
