@@ -3,8 +3,6 @@
 import java.util.*;
 import java.util.concurrent.*;
 
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.Semaphore;
 class InvalidNumberException extends Exception {
     public InvalidNumberException(String message) {
         super(message);
@@ -27,6 +25,8 @@ class BankThread extends Thread {
     public void setRound(int r)                     { this.rounds = r; }
     public void setBarrier(CyclicBarrier ba)        { this.barrier = ba; }
     public void setExchanger(Exchanger<Account> ex) { this.exchanger = ex; }
+    public boolean isDeposit()                      { return this.modeD; }
+    public void accountExchange() throws InterruptedException, BrokenBarrierException { this.sharedAccount = exchanger.exchange(sharedAccount); }
     
     public void run() {
         try {
@@ -133,12 +133,16 @@ public class Main {
                     else throw new InvalidNumberException("");
                 } catch (NumberFormatException e) { System.out.println("Invalid format!"); }
                   catch (InvalidNumberException e) { System.err.println("Invalid number!"); }
-            }
-            if (round == -1) break;         // Quit simulation & Final Balance Report
+            } if (round == -1) break;         // Quit simulation & Final Balance Report
 
             if (exchange) {            // 2nd simulation onwards > Exchange deposit accounts
-                accounts[0] = exchanger.exchange(accounts[1]);
-                accounts[1] = exchanger.exchange(accounts[0]);
+                for (BankThread thread : allThreads) {
+                    if (thread.isDeposit()) {
+                        try {
+                            thread.accountExchange();
+                        } catch (InterruptedException | BrokenBarrierException e) { e.printStackTrace(); }
+                    }
+                }
             } else exchange = true;    // 1st simulation
 
             for (BankThread thread : allThreads) {
