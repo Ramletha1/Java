@@ -3,8 +3,6 @@
 import java.util.*;
 import java.util.concurrent.*;
 
-import java.util.concurrent.BrokenBarrierException;
-
 class InvalidNumberException extends Exception {
     public InvalidNumberException(String message) {
         super(message);
@@ -18,7 +16,7 @@ class BankThread extends Thread {
     private CyclicBarrier       barrier;
     private int                 rounds;
     private boolean             modeD;          // true = deposit, false = withdraw
-    private int                 signal = 0;     // 0 = running, 1 = restarting, 2 = stop
+    private boolean             signal = false; // false = wait, true = another simulation
 
     public BankThread(String n, Account sa, boolean m) { 
         super(n);
@@ -29,9 +27,11 @@ class BankThread extends Thread {
     public void setRound(int r)                     { this.rounds = r; }
     public void setBarrier(CyclicBarrier ba)        { this.barrier = ba; }
     public void setExchanger(Exchanger<Account> ex) { this.exchanger = ex; }
-    public boolean isDeposit()                      { return this.modeD; }
     public void accountExchange() throws InterruptedException { this.sharedAccount = exchanger.exchange(sharedAccount); }
-    public synchronized void threadNotify()                      { notify(); }
+
+    public boolean isDeposit()                      { return this.modeD; }
+    public void setSignal(boolean s)                { this.signal = s; }   
+    public synchronized void threadNotify()         { notify(); }
     
     public synchronized void run() {
         while (true) {
@@ -49,16 +49,13 @@ class BankThread extends Thread {
                         sharedAccount.withdraw(i);
                     }
                 } catch (InterruptedException | BrokenBarrierException e) { e.printStackTrace(); }
-            } rounds = 0;
+            } this.signal = false;
 
             synchronized (this) {
                 try {
                     wait();
                 } catch (InterruptedException e) { e.printStackTrace(); }
-                finally {
-                    if (rounds != 0) continue;
-                    else break;
-                }
+                finally { if (!this.signal) break; }
             }
         }
     }
@@ -165,7 +162,10 @@ public class Main {
             }
             // 2nd simulation onwards > Exchange deposit accounts
             else if (again) {
-                for (BankThread thread : allThreads) thread.setRound(round);
+                for (BankThread thread : allThreads) {
+                    thread.setRound(round);
+                    thread.setSignal(true);
+                }
                 for (BankThread thread : allThreads) allThreads.forEach(BankThread::threadNotify);
             }
 
