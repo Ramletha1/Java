@@ -84,9 +84,9 @@ class Account {
         if (balance == 0) {
             String thisThread = String.format("%-4s >>", Thread.currentThread().getName());
             System.out.println(thisThread + "withdrawal fails (Balance = 0)");
-            return;
+        } else {
+            int money = rand.nextInt(1, (this.balance)/2);
         }
-        int money = rand.nextInt(1, (this.balance)/2);
         // Random money (1 to balance/2) to withdraw; update the balance
         // Report thread activity (see example output)
         //   - But if balance is already 0, report that withdrawal fails
