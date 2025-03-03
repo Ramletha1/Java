@@ -4,11 +4,12 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import java.util.concurrent.BrokenBarrierException;
+
 class InvalidNumberException extends Exception {
     public InvalidNumberException(String message) {
         super(message);
     }
-}
+
 
 class BankThread extends Thread {
     private Account             sharedAccount;
@@ -120,41 +121,18 @@ public class Main {
         Account[]               accounts  = {new Account("account A", 0), new Account(".".repeat(35) + "account B", 0)};   
         ArrayList<BankThread>   allThreads = new ArrayList<>();
         Exchanger<Account>      exchanger  = new Exchanger<>();
-        CyclicBarrier           barrier    = new CyclicBarrier(allThreads.size()+1);
+        CyclicBarrier           barrier    = new CyclicBarrier(accounts.size() * 2 + 1);
         String                  thisThread = String.format("%-4s >>", Thread.currentThread().getName());
 
         for (Account account : accounts)    // Set semaphore permits to # of accounts
             account.setSemaphores(accounts.length);
 
-        /*for (int i = 0; i < accounts.length; i++) {
-            // Deposit threads
-            BankThread depositThread = new BankThread("D" + (i+1), accounts[i], true);
-            depositThread.setBarrier(barrier);
-            depositThread.setExchanger(exchanger);
-            // Withdraw threads
-            BankThread withdrawThread = new BankThread("W" + (i+1), accounts[i], false);
-            withdrawThread.setBarrier(barrier);
-            withdrawThread.setExchanger(null);
-            allThreads.addAll(Arrays.asList(depositThread, withdrawThread));
-        }*/
-
         int round = 0;
         boolean again = false;
+        // Loop until user quits
         while (round != -1) {
-            if (!again) {       // Create Thread (First simulation)
-                for (int i = 0; i < accounts.length; i++) {
-                    // Deposit threads
-                    BankThread depositThread = new BankThread("D" + (i+1), accounts[i], true);
-                    depositThread.setBarrier(barrier);
-                    depositThread.setExchanger(exchanger);
-                    // Withdraw threads
-                    BankThread withdrawThread = new BankThread("W" + (i+1), accounts[i], false);
-                    withdrawThread.setBarrier(barrier);
-                    withdrawThread.setExchanger(null);
-                    allThreads.addAll(Arrays.asList(depositThread, withdrawThread));
-                }
-            }
-            while (true) {      // Ask user input for #rounds
+            // Ask user input for #rounds
+            while (true) {
                 System.out.printf("\n\n%s Enter #rounds for a new simulation (-1 to quit)\n", thisThread);
                 try {
                     round = Integer.parseInt(keyboardScan.nextLine());
@@ -163,34 +141,43 @@ public class Main {
                 } catch (NumberFormatException e) { System.out.println("Invalid format!"); }
                   catch (InvalidNumberException e) { System.err.println("Invalid number!"); }
             }
+
+            // Create threads
+            for (int i = 0; i < accounts.length; i++) {
+                // Deposit threads
+                BankThread depositThread = new BankThread("D" + (i+1), accounts[i], true);
+                depositThread.setBarrier(barrier);
+                depositThread.setExchanger(exchanger);
+                // Withdraw threads
+                BankThread withdrawThread = new BankThread("W" + (i+1), accounts[i], false);
+                withdrawThread.setBarrier(barrier);
+                withdrawThread.setExchanger(null);
+                // Stores all threads inside ArrayList
+                allThreads.addAll(Arrays.asList(depositThread, withdrawThread));
+            }
             
-            if (round == -1) break;         // Quit simulation & Final Balance Report
-            if (again) {                    // 2nd simulation onwards > Exchange deposit accounts
-                for (int i = 0; i < accounts.length; i++) {
-                    // Deposit threads
-                    BankThread depositThread = new BankThread("D" + (i+1), accounts[i], true);
-                    depositThread.setBarrier(barrier);
-                    depositThread.setExchanger(exchanger);
-                    // Withdraw threads
-                    BankThread withdrawThread = new BankThread("W" + (i+1), accounts[i], false);
-                    withdrawThread.setBarrier(barrier);
-                    withdrawThread.setExchanger(null);
-                    allThreads.addAll(Arrays.asList(depositThread, withdrawThread));
-                }
+            // Quit simulation & Final Balance Report
+            if (round == -1) break;
+            // 2nd simulation onwards > Exchange deposit accounts
+            if (again) {
                 for (BankThread thread : allThreads) {
+                    // Check for deposit threads and swap account
                     if (thread.isDeposit()) {
                         try {
                             thread.accountExchange();
                         } catch (InterruptedException e) { e.printStackTrace(); }
                     }
                 }
-            } else again = true;            // 1st simulation
+            // 1st simulation > Skip exchange
+            } else again = true;
 
+            // Start threads
             for (BankThread thread : allThreads) {
                 thread.setRound(round);
                 thread.start();
             }
 
+            // Wait for all threads to finish
             for (BankThread thread : allThreads) {
                 try {
                     thread.join();
@@ -200,9 +187,12 @@ public class Main {
         }
         keyboardScan.close();
 
-        for (Account account : accounts)
+        // Report final balances of all accounts
+        for (Account account : accounts) {
             System.out.printf("%s final balance %4s %s = %d\n", thisThread, "", account.getName(), account.getBalance());
-
+        }
+    }
+}
         
         // Create BankThread D1 and D2 for deposit task
         //   - In the first simulation, D1 manages account A, D2 manages accout B
@@ -224,5 +214,3 @@ public class Main {
         // If user dosn't want to run a new simulation:
         //   - Wait until all BankThreads return
         //   - Main thread reports final balances of all accounts
-    }
-}
