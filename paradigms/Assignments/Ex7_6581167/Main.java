@@ -37,16 +37,16 @@ class BankThread extends Thread {
         while (true) {
             for (int i = 0; i <= rounds; i++) {
                 try {
-                    Thread.sleep(5);
+                    //Thread.sleep(5);
                     barrier.await();
                     if (modeD) {
                         if (i == 0 && sharedAccount.getBalance() != 0) {
                             accountExchange();
                             System.out.printf("%-4s >> exchange account\n", Thread.currentThread().getName());
+                            sharedAccount.deposit(i);
                         } else sharedAccount.deposit(i);
                     } else {
-                        if (i == 0) continue;
-                        sharedAccount.withdraw(i);
+                        if (i == 0) sharedAccount.withdraw(i);
                     }
                 } catch (InterruptedException | BrokenBarrierException e) { e.printStackTrace(); }
             } this.signal = false;
@@ -77,9 +77,8 @@ class Account {
         String thisThread = String.format("%-4s >>", Thread.currentThread().getName());
         try {
             semaphore.acquire();
-            if (round == 0) {
+            if (round == 0)
                 System.out.printf("%s manage %4s %s (balance = %d)\n", thisThread, "", this.name, this.balance);
-            }
             else {
                 int money = rand.nextInt(1,100);
                 balance += money;
@@ -93,9 +92,11 @@ class Account {
         String thisThread = String.format("%-4s >>", Thread.currentThread().getName());
         try {
             semaphore.acquire();
-            if (balance == 0) {
+            if (round == 0)
+                System.out.printf("%s manage %4s %s (balance = %d)\n", thisThread, "", this.name, this.balance);
+            else if (balance == 0)
                 System.out.printf("%s round %-5d %s cannot withdraw.\n", thisThread, round, this.name);
-            } else {
+            else {
                 int money = (rand.nextInt(1, (this.balance)/2));
                 balance -= money;
                 System.out.printf("%s round %-5d %s -%,d balance = %d\n", thisThread, round, this.name, money, balance);
@@ -204,24 +205,3 @@ public class Main {
         } catch (InterruptedException e) { e.printStackTrace(); }
     }
 }
-        
-        // Create BankThread D1 and D2 for deposit task
-        //   - In the first simulation, D1 manages account A, D2 manages accout B
-        //   - Pass Exchanger & CyclicBarrier objects
-        
-        // Create BankThread W1 and W2 for withdraw task
-        //   - In all simulations, W1 manages only account A, W2 manages only account B
-        //   - Pass CyclicBarrier object (Exchanger can be set to null)
-
-        
-        // Start all BankThreads
-
-        
-        // Loop for banking simulation. In each simulation:
-        //  (1) Main thread gets #rounds from user and pass it to BankThread.
-        //  (2) Main thread waits until all BankThread completes #rounds of deposit/withdraw
-        
-        
-        // If user dosn't want to run a new simulation:
-        //   - Wait until all BankThreads return
-        //   - Main thread reports final balances of all accounts
