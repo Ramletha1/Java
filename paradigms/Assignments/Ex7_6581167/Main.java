@@ -37,7 +37,7 @@ class BankThread extends Thread {
         while (true) {
             for (int i = 0; i <= rounds; i++) {
                 try {
-                    Thread.sleep(5);       // Support up to 100 rounds
+                    Thread.sleep(5);
                     barrier.await();
                     if (modeD) {
                         if (i == 0 && sharedAccount.getBalance() != 0) {
@@ -138,8 +138,20 @@ public class Main {
         boolean again = false;
         // Loop until user quits
         while (round != -1) {
-            // Ask user input for #
-            threadSleep(200);
+            // Wait for all threads to be in WAITING state
+            if (again) {
+                while (true) {
+                    boolean allWaiting = true;
+                    for (BankThread thread : allThreads) {
+                        if (thread.getState() != Thread.State.WAITING) {
+                            allWaiting = false;
+                            break;
+                        }
+                    }
+                    if (allWaiting) break;
+                }
+            }
+            // Ask user input for #rounds
             while (true) {
                 System.out.printf("\n\n%s Enter #rounds for a new simulation (-1 to quit)\n", thisThread);
                 try {
@@ -169,7 +181,7 @@ public class Main {
                 allThreads.forEach(BankThread::threadNotify);
             }
 
-            threadSleep(7 * round + 20);
+            threadSleep(10 * round + 50);
         }
         keyboardScan.close();
 
