@@ -35,20 +35,21 @@ class BankThread extends Thread {
     
     public synchronized void run() {
         while (true) {
-            for (int i = 0; i <= rounds; i++) {
+            if (modeD && sharedAccount.getBalance() != 0) {
                 try {
-                    //Thread.sleep(5);
                     barrier.await();
-                    if (modeD) {
-                        if (i == 0 && sharedAccount.getBalance() != 0) {
-                            accountExchange();
-                            System.out.printf("%-4s >> exchange account\n", Thread.currentThread().getName());
-                            sharedAccount.deposit(i);
-                        } else sharedAccount.deposit(i);
-                    } else {
-                        if (i == 0) sharedAccount.withdraw(i);
-                    }
-                } catch (InterruptedException | BrokenBarrierException e) { e.printStackTrace(); }
+                    accountExchange();
+                }
+                catch (InterruptedException | BrokenBarrierException e) { e.printStackTrace(); }
+                System.out.printf("%-4s >> exchange account\n", Thread.currentThread().getName());
+            }
+
+
+            for (int i = 0; i <= rounds; i++) {
+                try { barrier.await(); }
+                catch (InterruptedException | BrokenBarrierException e) { e.printStackTrace(); }
+                if (modeD)  sharedAccount.deposit(i);
+                else        sharedAccount.withdraw(i);
             } this.signal = false;
 
             synchronized (this) {
