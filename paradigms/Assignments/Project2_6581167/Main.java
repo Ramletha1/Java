@@ -310,19 +310,20 @@ public class Main {
     public static File readFile() {
         // String path = "src/main/java/Project_2/";
         String path = "";
-        String fileName = "config_1.txt";
+        String fileName = "config.txt";
+        File file;
         while (true) {
-            File file = new File(path + fileName);
-            try (Scanner readFile = new Scanner(file)) {
-                return file;
+            file = new File(path + fileName);
+            try (Scanner readFile = new Scanner(file);){
+                break;
             } catch (FileNotFoundException e) {
                 System.out.println(e);
-                Scanner input = new Scanner(System.in);
                 System.out.println("New file name = ");
+                Scanner input = new Scanner(System.in);
                 fileName = input.nextLine();
-                input.close();
             }
         }
+        return file;
     }
 
     public void threadSleep(int ms) {
