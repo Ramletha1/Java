@@ -3,6 +3,7 @@
 import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;
+import java.util.concurrent.Semaphore;
 
 interface Tasks {
     void run();
@@ -28,7 +29,6 @@ class SharedBuffer {
 
     public synchronized void setOrder(int order) {
         this.order = order;
-        notifyAll();
     }
 
     public boolean checkCompletion() {
@@ -49,7 +49,7 @@ class AgencyThread extends Thread implements Tasks {
     private Random rand = new Random();
     private CyclicBarrier barrier;
     private SharedBuffer sharedBuffer;
-    private Semaphore semaphore = new Semaphore(1, true);
+    private Semaphore semaphore;
 
     public AgencyThread(String name, int maxArrival, ArrayList<Tour> tours, CyclicBarrier barrier, SharedBuffer sharedBuffer, Object lock) {
         super(name);
@@ -59,6 +59,8 @@ class AgencyThread extends Thread implements Tasks {
         this.sharedBuffer = sharedBuffer;
         this.lock = lock;
     }
+
+    public void setSemaphore(Semaphore sem){ this.semaphore = sem; }
 
     @Override
     public void run() {
@@ -71,16 +73,20 @@ class AgencyThread extends Thread implements Tasks {
                 }
             }
 
+            int arrivingCustomers = rand.nextInt(maxArrival + 1);
+            remainingCustomer += arrivingCustomers;
+            System.out.printf("%17s  >> new arrival = %2d %9s     remaining customers = %d \n", this.getName(), arrivingCustomers, " ", remainingCustomer);
+            Tour selectedTour = tours.get(rand.nextInt(tours.size()));
+            int sendCustomer = 0;
+
+            try{
+                barrier.await();
+            } catch (InterruptedException | BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+
             try {
                 semaphore.acquire();
-                barrier.await();
-                int arrivingCustomers = rand.nextInt(maxArrival + 1);
-                remainingCustomer += arrivingCustomers;
-                System.out.printf("%17s  >> new arrival = %2d      remaining customers = %d \n", this.getName(), arrivingCustomers, remainingCustomer);
-                Tour selectedTour = tours.get(rand.nextInt(tours.size()));
-                int sendCustomer = 0;
-
-                barrier.await();
                 if (selectedTour.checkEmpty() < remainingCustomer) {
                     sendCustomer = selectedTour.checkEmpty();
                     remainingCustomer -= sendCustomer;
@@ -90,7 +96,11 @@ class AgencyThread extends Thread implements Tasks {
                 }
                 selectedTour.addCustomer(sendCustomer);
                 System.out.printf("%17s  >> send %2d customers to %-7s   seat taken = %2d \n", this.getName(), sendCustomer, selectedTour.getName(), selectedTour.getCurrentCustomers());
-            } catch (InterruptedException | BrokenBarrierException e) {
+                
+                if(sharedBuffer.checkCompletion()){
+                    System.out.printf("%17s  >>\n", Thread.currentThread().getName());
+                }
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
                 semaphore.release();
@@ -99,7 +109,7 @@ class AgencyThread extends Thread implements Tasks {
     }
 }
 
-class Tour {
+class Tour implements Comparable<Tour> {
     private String name;
     private int maxCustomer;
     private int currentCustomer = 0;
@@ -108,6 +118,16 @@ class Tour {
     public Tour(String name, int maxCustomer) {
         this.name = name;
         this.maxCustomer = maxCustomer;
+    }
+
+    public int compareTo(Tour other){
+        if (this.totalCustomers>other.totalCustomers){
+            return -11;
+        }else if (this.totalCustomers<other.totalCustomers){
+            return 1;
+        }else{
+            return 0;
+        }
     }
 
     public String getName() { return name; }
@@ -132,7 +152,7 @@ class OperatorThread extends Thread implements Tasks {
     private ArrayList<Place> places;
     private CyclicBarrier barrier;
     private SharedBuffer sharedBuffer;
-    private Semaphore semaphore = new Semaphore(1, true);
+    private Semaphore semaphore;
 
     public OperatorThread(String name, Tour tour, ArrayList<Place> places, CyclicBarrier barrier, SharedBuffer sharedBuffer, Object lock) {
         super(name);
@@ -142,6 +162,8 @@ class OperatorThread extends Thread implements Tasks {
         this.sharedBuffer = sharedBuffer;
         this.lock = lock;
     }
+
+    public void setSemaphore(Semaphore sem) { this.semaphore = sem; }
 
     @Override
     public void run() {
@@ -155,18 +177,17 @@ class OperatorThread extends Thread implements Tasks {
             }
 
             try {
-                barrier.await();
                 semaphore.acquire();
                 int ranNum = random.nextInt(places.size());
                 places.get(ranNum).addVisitor(tour.getCurrentCustomers());
                 if (tour.getCurrentCustomers() <= 0) {
                     System.out.printf("%17s  >> no customer\n", this.getName());
                 } else {
-                    System.out.printf("%17s  >> take %d to %s   visitor count = %3d \n", this.getName(),
+                    System.out.printf("%17s  >> take %d to %s %10s  visitor count = %3d \n", this.getName(),
                             tour.getCurrentCustomers(),
-                            places.get(ranNum).getName(), places.get(ranNum).getVisitor());
+                            places.get(ranNum).getName(), "", places.get(ranNum).getVisitor());
                 }
-            } catch (InterruptedException | BrokenBarrierException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
               finally {
@@ -209,7 +230,8 @@ public class Main {
         ArrayList<String>       agencyNameList = new ArrayList<String>();
         ArrayList<String>     operatorNameList = new ArrayList<String>();
         ArrayList<String>        placeNameList = new ArrayList<String>();
-
+        
+        Semaphore semaphore = new Semaphore(1, true);
         Object agencyLock = new Object();
         Object operatorLock = new Object();
 
@@ -236,12 +258,14 @@ public class Main {
         for (int i = 0; i < agencyCount; i++) {
             agencyNameList.add("AgencyThread_" + i);
             agencyList.add(new AgencyThread(agencyNameList.get(i), agencyArrival, tours, agencyBarrier, sharedBuffer, agencyLock));
+            agencyList.get(i).setSemaphore(semaphore);
         }
 
         for (int i = 0; i < tourCount; i++) {
             operatorNameList.add("OperatorThread_" + i);
             tours.add(new Tour("Tour_" + i, tourCapacity));
             operatorList.add(new OperatorThread(operatorNameList.get(i), tours.get(i), places, operatorBarrier, sharedBuffer, operatorLock));
+            operatorList.get(i).setSemaphore(semaphore);
         }
 
         for (int i = 0; i < placeCount; i++) {
@@ -304,6 +328,12 @@ public class Main {
             }
             sharedBuffer.setOrder(1);
             System.out.printf("%17s  >>  \n%17s  >> %s\n", Thread.currentThread().getName(), Thread.currentThread().getName(), "=".repeat(60));
+        }
+        Collections.sort(tours);
+        
+        System.out.printf("%17s  >> Summary \n",Thread.currentThread().getName());
+        for(Tour tour : tours){
+            System.out.printf("%17s  >> %-10s total customres = %5d  \n",Thread.currentThread().getName(),tour.getName(),tour.getTotalCustomers());
         }
     }
 
