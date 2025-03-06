@@ -1,4 +1,12 @@
-// package Project_2;
+/*
+6580170   Uraiphat     Thanaphaet
+6581096   Phukij       Rittapreedanon
+6581098   Siriwat      Ittisompiboon
+6581167   Wongsatorn   Suwannarit
+6680535   Ratthawit    Barameekanjanawat
+*/
+
+// package Project2_6581167;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -338,7 +346,7 @@ public class Main {
     }
 
     public static File readFile() {
-        // String path = "src/main/java/Project_2/";
+        // String path = "src/main/java/Project2_6581167/";
         String path = "";
         String fileName = "config.txt";
         File file;
