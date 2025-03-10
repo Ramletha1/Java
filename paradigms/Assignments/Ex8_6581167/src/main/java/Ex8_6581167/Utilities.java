@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 interface MyConstants
 {
     //----- Resource files
-    static final String PATH           = "resources/";
+    static final String PATH           = "src/main/java/Ex8_6581167/resources/";
     static final String FILE_BG        = PATH + "background.jpg";
     static final String FILE_CH_1_MAIN = PATH + "marmite.png";
     static final String FILE_CH_1_ALT  = PATH + "crow.png";    
