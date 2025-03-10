@@ -8,7 +8,8 @@ public class GUI {
         frame.setVisible(true);
 
         frame.getContentPane().setLayout(new FlowLayout());
-
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
         JButton button = new JButton("Swing Button");
         frame.getContentPane().add(button);
         frame.validate();

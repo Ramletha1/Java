@@ -1,12 +1,16 @@
-package Ex8;
+// Wongsatorn Suwannarit 6581167
+
+package Ex8_6581167;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
+
 // Interface for keeping constant values
-interface MyConstants {
+interface MyConstants
+{
     //----- Resource files
-    static final String PATH           = "src/main/java/Ex8Sol/resources/";
+    static final String PATH           = "resources/";
     static final String FILE_BG        = PATH + "background.jpg";
     static final String FILE_CH_1_MAIN = PATH + "marmite.png";
     static final String FILE_CH_1_ALT  = PATH + "crow.png";    
@@ -23,11 +27,14 @@ interface MyConstants {
     static final int CH_HEIGHT     = 50;
     static final int IT_WIDTH      = 60;
     static final int IT_HEIGHT     = 50;
+
+    static final int SPEED         = 20;
 }
 
 
 // Auxiliary class to resize image
-class MyImageIcon extends ImageIcon {
+class MyImageIcon extends ImageIcon
+{
     public MyImageIcon(String fname)  { super(fname); }
     public MyImageIcon(Image image)   { super(image); }
 

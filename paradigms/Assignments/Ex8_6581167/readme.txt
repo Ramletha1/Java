@@ -1,0 +1,1 @@
+This exercise is use as maven project.
