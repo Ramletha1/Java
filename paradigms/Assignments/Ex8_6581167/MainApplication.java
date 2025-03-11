@@ -99,11 +99,8 @@ class MainApplication extends JFrame implements KeyListener {
             default:
                 if (key_Pressed == KeyEvent.VK_ESCAPE && flyingLabel != null) {
                     flyingLabel.wingsOff();
-                    System.out.println("1");
                     itemLabel.reset();
-                    System.out.println("2");
                     flyingLabel = null;
-                    System.out.println("3");
                 }
                 break;
         }
